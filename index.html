@@ -3,462 +3,365 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VoiceSync Studio — Add Audio to Video</title>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<title>VoiceSync Studio — Real Human Voices</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #080c14;
-  --s1: #0d1220;
-  --s2: #111827;
-  --s3: #1a2235;
-  --s4: #1e2940;
-  --a1: #3b82f6;
-  --a2: #06d6a0;
-  --a3: #f59e0b;
-  --a4: #ec4899;
-  --text: #e2e8f0;
-  --dim: #94a3b8;
-  --dimmer: #475569;
-  --border: #1e2d45;
-  --border2: #2d3f5a;
-  --r: 12px;
-  --r2: 8px;
+  --bg:#07080d;--s0:#0a0d14;--s1:#0e1219;--s2:#131820;--s3:#182030;--s4:#1c2638;
+  --border:#1e293b;--border2:#243044;--border3:#2d3f5c;
+  --text:#e1e8f5;--dim:#8899b4;--dimmer:#3d5068;
+  --a1:#6366f1;--a2:#10b981;--a3:#f59e0b;--a4:#f43f5e;--a5:#8b5cf6;--a6:#0ea5e9;
 }
 *{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
-body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 60% at 20% -10%,rgba(59,130,246,0.07),transparent),radial-gradient(ellipse 60% 50% at 80% 110%,rgba(6,214,160,0.05),transparent);pointer-events:none;z-index:0}
-
-/* ── Layout ── */
-.app{position:relative;z-index:1;display:grid;grid-template-rows:auto 1fr;min-height:100vh}
-
-/* ── Header ── */
-header{padding:0 28px;height:60px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);background:rgba(13,18,32,0.85);backdrop-filter:blur(12px);position:sticky;top:0;z-index:100}
+html,body{height:100%}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;min-height:100vh}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 70% 50% at 15% 0%,rgba(99,102,241,.08),transparent),radial-gradient(ellipse 60% 40% at 85% 100%,rgba(16,185,129,.06),transparent);pointer-events:none;z-index:0}
+header{position:sticky;top:0;z-index:200;height:58px;padding:0 24px;display:flex;align-items:center;justify-content:space-between;background:rgba(7,8,13,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
 .logo{display:flex;align-items:center;gap:10px}
-.logo-mark{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--a1),var(--a2));display:flex;align-items:center;justify-content:center;font-size:16px}
-.logo-name{font-size:18px;font-weight:800;letter-spacing:-0.5px}
-.logo-name em{font-style:normal;color:var(--a2)}
-.hdr-right{display:flex;align-items:center;gap:10px}
-.pill{font-family:'JetBrains Mono',monospace;font-size:10px;padding:4px 10px;border-radius:20px;border:1px solid var(--border2);color:var(--dim);letter-spacing:1px}
-.pill.live{border-color:rgba(6,214,160,0.4);color:var(--a2);animation:blink 2s infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.5}}
-
-/* ── Main columns ── */
-.workspace{display:grid;grid-template-columns:1fr 340px;gap:0;height:calc(100vh - 61px)}
-.left-col{overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:16px;border-right:1px solid var(--border)}
-.right-col{overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:16px}
-
-/* ── Cards ── */
-.card{background:var(--s1);border:1px solid var(--border);border-radius:14px;overflow:hidden}
-.card-head{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;background:var(--s2)}
-.card-head .ch-icon{font-size:15px}
-.card-head h2{font-size:13px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--text);flex:1}
-.card-head .badge{font-family:'JetBrains Mono',monospace;font-size:10px;padding:2px 8px;border-radius:10px;background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.3);color:var(--a1)}
-.badge.green{background:rgba(6,214,160,.1);border-color:rgba(6,214,160,.3);color:var(--a2)}
-.badge.amber{background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.3);color:var(--a3)}
-.card-body{padding:16px}
-
-/* ── Upload drop zone ── */
+.logo-mark{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--a1),var(--a5));display:flex;align-items:center;justify-content:center;font-size:15px}
+.logo-text{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;letter-spacing:-.5px}
+.logo-text b{color:var(--a2)}
+.hdr-pills{display:flex;gap:8px;align-items:center}
+.hpill{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.8px;padding:3px 10px;border-radius:20px;border:1px solid var(--border2);color:var(--dim)}
+.hpill.live{border-color:rgba(16,185,129,.4);color:var(--a2);display:flex;align-items:center;gap:5px}
+.hpill.live::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--a2);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.workspace{position:relative;z-index:1;display:grid;grid-template-columns:1fr 360px;height:calc(100vh - 58px)}
+.lcol{overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:16px;border-right:1px solid var(--border)}
+.rcol{overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:16px}
+.card{background:var(--s1);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+.card-hd{padding:13px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:9px;background:var(--s2)}
+.card-hd .ico{font-size:14px}
+.card-hd h3{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;flex:1}
+.tag{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1px;padding:2px 8px;border-radius:10px;border:1px solid var(--border2);color:var(--dim)}
+.tag.blue{border-color:rgba(99,102,241,.4);color:var(--a1);background:rgba(99,102,241,.08)}
+.tag.green{border-color:rgba(16,185,129,.4);color:var(--a2);background:rgba(16,185,129,.08)}
+.tag.amber{border-color:rgba(245,158,11,.4);color:var(--a3);background:rgba(245,158,11,.08)}
+.tag.violet{border-color:rgba(139,92,246,.4);color:var(--a5);background:rgba(139,92,246,.08)}
+.cb{padding:18px}
 .drop-zone{border:2px dashed var(--border2);border-radius:12px;padding:36px 20px;text-align:center;cursor:pointer;transition:all .25s;position:relative;background:var(--s2)}
-.drop-zone:hover,.drop-zone.over{border-color:var(--a1);background:rgba(59,130,246,.04);box-shadow:0 0 24px rgba(59,130,246,.1)}
+.drop-zone:hover,.drop-zone.over{border-color:var(--a1);background:rgba(99,102,241,.04);box-shadow:0 0 28px rgba(99,102,241,.1)}
 .drop-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
-.dz-icon{font-size:40px;margin-bottom:10px}
-.dz-title{font-size:15px;font-weight:700;margin-bottom:4px}
-.dz-sub{font-size:12px;color:var(--dim);font-family:'JetBrains Mono',monospace}
-.dz-formats{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:12px}
-.fmt-chip{font-family:'JetBrains Mono',monospace;font-size:10px;padding:3px 8px;border-radius:6px;border:1px solid var(--border2);color:var(--dimmer)}
-
-/* ── Video player ── */
-#videoWrap{display:none;position:relative}
-.vp-container{border-radius:12px;overflow:hidden;background:#000;aspect-ratio:16/9;position:relative}
-#videoEl{width:100%;height:100%;display:block;object-fit:contain}
-.vp-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;opacity:0;transition:opacity .2s}
-.vp-container:hover .vp-overlay{opacity:1}
-
-/* Custom controls */
-.vp-controls{background:linear-gradient(0deg,rgba(0,0,0,.8),transparent);padding:12px 14px 10px;display:flex;align-items:center;gap:10px;position:absolute;bottom:0;left:0;right:0}
-.vc-btn{background:none;border:none;color:#fff;font-size:18px;cursor:pointer;padding:4px;line-height:1;transition:transform .15s}
-.vc-btn:hover{transform:scale(1.2)}
-.vc-time{font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(255,255,255,.8);min-width:90px}
-.vc-seek{flex:1;height:4px;background:rgba(255,255,255,.2);border-radius:4px;cursor:pointer;position:relative}
-.vc-seek-fill{height:100%;background:var(--a1);border-radius:4px;pointer-events:none;transition:width .1s}
-.vc-vol{width:60px;height:3px;background:rgba(255,255,255,.2);border-radius:3px;cursor:pointer}
-.vc-vol-fill{height:100%;background:var(--a2);border-radius:3px}
-
-/* Video info bar */
-.vinfo{margin-top:10px;display:flex;gap:10px;flex-wrap:wrap}
-.vi-chip{font-family:'JetBrains Mono',monospace;font-size:11px;padding:4px 10px;border-radius:8px;border:1px solid var(--border2);color:var(--dim);display:flex;align-items:center;gap:5px}
-.vi-chip strong{color:var(--a2)}
-
-/* ── Waveform ── */
-.waveform-wrap{margin-top:12px;border-radius:10px;overflow:hidden;border:1px solid var(--border);background:var(--s2);position:relative}
-canvas#waveCanvas{width:100%;height:64px;display:block}
-.wf-label{position:absolute;top:6px;left:10px;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--dimmer);letter-spacing:1px;text-transform:uppercase}
-
-/* ── Section divider ── */
-.sdiv{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:2px;color:var(--dimmer);text-transform:uppercase;padding:10px 0 8px;display:flex;align-items:center;gap:8px}
+.dz-icon{font-size:38px;margin-bottom:10px}
+.dz-h{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin-bottom:5px}
+.dz-s{font-size:12px;color:var(--dim);font-family:'JetBrains Mono',monospace}
+.dz-chips{display:flex;gap:5px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.chip{font-family:'JetBrains Mono',monospace;font-size:10px;padding:2px 8px;border-radius:5px;border:1px solid var(--border2);color:var(--dimmer)}
+#videoWrap{display:none}
+.player-shell{border-radius:12px;overflow:hidden;background:#000;aspect-ratio:16/9;position:relative;border:1px solid var(--border)}
+#vid{width:100%;height:100%;display:block;object-fit:contain}
+.vid-ctrl{position:absolute;bottom:0;left:0;right:0;padding:10px 14px;background:linear-gradient(0deg,rgba(0,0,0,.85),transparent);display:flex;align-items:center;gap:10px}
+.vbtn{background:none;border:none;color:#fff;font-size:17px;cursor:pointer;padding:4px 5px;line-height:1;transition:transform .15s}
+.vbtn:hover{transform:scale(1.2)}
+.vtime{font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(255,255,255,.75);min-width:88px;letter-spacing:.3px}
+.seek{flex:1;height:3px;background:rgba(255,255,255,.2);border-radius:3px;cursor:pointer;position:relative}
+.seek-fill{height:100%;background:var(--a1);border-radius:3px;pointer-events:none}
+.vinfo{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.vchip{font-family:'JetBrains Mono',monospace;font-size:10px;padding:4px 10px;border-radius:7px;border:1px solid var(--border2);color:var(--dim);display:flex;align-items:center;gap:5px}
+.vchip strong{color:var(--a2)}
+.wave-wrap{margin-top:12px;border-radius:10px;overflow:hidden;border:1px solid var(--border);background:var(--s2);position:relative}
+canvas#wave{width:100%;height:56px;display:block}
+.wlabel{position:absolute;top:6px;left:10px;font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--dimmer);letter-spacing:1.5px;text-transform:uppercase}
+.sdiv{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:500;letter-spacing:2px;color:var(--dimmer);text-transform:uppercase;padding:10px 0 8px;display:flex;align-items:center;gap:8px}
 .sdiv::after{content:'';flex:1;height:1px;background:var(--border)}
-
-/* ── Language pills ── */
-.lang-wrap{display:flex;gap:6px;flex-wrap:wrap}
-.lang-btn{padding:6px 13px;border-radius:8px;border:1px solid var(--border2);background:var(--s2);color:var(--dim);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:5px}
-.lang-btn:hover{border-color:var(--a1);color:var(--a1)}
-.lang-btn.active{background:rgba(59,130,246,.12);border-color:var(--a1);color:var(--a1)}
-
-/* ── Textarea ── */
-textarea{width:100%;min-height:90px;background:var(--s2);border:1px solid var(--border2);border-radius:10px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.7;padding:12px 14px;resize:vertical;outline:none;transition:border-color .2s}
-textarea:focus{border-color:var(--a1);box-shadow:0 0 0 3px rgba(59,130,246,.08)}
+.api-banner{background:linear-gradient(135deg,rgba(99,102,241,.1),rgba(139,92,246,.08));border:1px solid rgba(99,102,241,.3);border-radius:11px;padding:13px 15px;display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.api-banner .ab-icon{font-size:20px}
+.api-banner .ab-body{flex:1}
+.api-banner .ab-title{font-size:12px;font-weight:700;color:var(--a1);margin-bottom:2px}
+.api-banner .ab-sub{font-size:11px;color:var(--dim)}
+.api-banner a{color:var(--a1);text-decoration:none;font-size:11px;font-weight:600;white-space:nowrap}
+.api-banner a:hover{text-decoration:underline}
+.key-row{display:flex;gap:8px;margin-bottom:14px}
+.key-input{flex:1;background:var(--s2);border:1px solid var(--border2);border-radius:9px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:12px;padding:9px 13px;outline:none;transition:border-color .2s}
+.key-input:focus{border-color:var(--a1);box-shadow:0 0 0 3px rgba(99,102,241,.1)}
+.key-input::placeholder{color:var(--dimmer)}
+.key-btn{padding:9px 14px;border-radius:9px;border:1px solid rgba(99,102,241,.4);background:rgba(99,102,241,.12);color:var(--a1);font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap}
+.key-btn:hover{background:rgba(99,102,241,.22);border-color:var(--a1)}
+.key-btn.ok{border-color:rgba(16,185,129,.4);background:rgba(16,185,129,.1);color:var(--a2)}
+.lang-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.lb{padding:6px 12px;border-radius:8px;border:1px solid var(--border2);background:var(--s2);color:var(--dim);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:5px}
+.lb:hover{border-color:var(--a1);color:var(--a1)}
+.lb.sel{background:rgba(99,102,241,.12);border-color:var(--a1);color:var(--a1)}
+.voice-list{display:flex;flex-direction:column;gap:10px}
+.voice-card{background:var(--s2);border:1px solid var(--border2);border-radius:13px;padding:14px;cursor:pointer;transition:all .22s;position:relative;overflow:hidden;display:flex;align-items:center;gap:13px}
+.voice-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(99,102,241,.05),transparent);opacity:0;transition:opacity .2s}
+.voice-card:hover::before,.voice-card.sel::before{opacity:1}
+.voice-card:hover,.voice-card.sel{border-color:var(--a1);box-shadow:0 0 18px rgba(99,102,241,.12)}
+.vc-avatar{width:50px;height:50px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:24px;border:2px solid var(--border2);background:linear-gradient(135deg,var(--s3),var(--s4));transition:border-color .2s;position:relative}
+.voice-card.sel .vc-avatar{border-color:var(--a1);box-shadow:0 0 10px rgba(99,102,241,.3)}
+.vc-info{flex:1;min-width:0}
+.vc-name{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;margin-bottom:2px}
+.vc-sub{font-size:11px;color:var(--dim);line-height:1.5}
+.vc-desc{font-size:10px;color:var(--dimmer);margin-top:3px;line-height:1.4}
+.vc-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
+.vc-tag{font-size:9px;font-family:'JetBrains Mono',monospace;letter-spacing:.5px;padding:2px 7px;border-radius:5px;border:1px solid var(--border2);color:var(--dimmer)}
+.vc-right{display:flex;flex-direction:column;align-items:flex-end;gap:7px;flex-shrink:0}
+.vc-check{width:20px;height:20px;border-radius:50%;background:var(--a1);display:none;align-items:center;justify-content:center;font-size:10px;font-weight:900;color:#fff}
+.voice-card.sel .vc-check{display:flex}
+.vc-play-btn{width:34px;height:34px;border-radius:50%;background:var(--s3);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer;transition:all .2s;color:var(--dim);flex-shrink:0}
+.vc-play-btn:hover{background:var(--a1);border-color:var(--a1);color:#fff;transform:scale(1.1)}
+.vc-play-btn.playing{background:var(--a4);border-color:var(--a4);color:#fff;animation:ringbtn .8s infinite}
+@keyframes ringbtn{0%,100%{box-shadow:0 0 0 0 rgba(244,63,94,.4)}50%{box-shadow:0 0 0 6px rgba(244,63,94,0)}}
+textarea{width:100%;min-height:90px;background:var(--s2);border:1px solid var(--border2);border-radius:11px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;line-height:1.7;padding:13px 14px;resize:vertical;outline:none;transition:border-color .2s}
+textarea:focus{border-color:var(--a1);box-shadow:0 0 0 3px rgba(99,102,241,.08)}
 textarea::placeholder{color:var(--dimmer)}
-.char-bar{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--dimmer);text-align:right;margin-top:4px}
-
-/* ── Voice grid ── */
-.voice-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-.vc{background:var(--s2);border:1px solid var(--border2);border-radius:11px;padding:10px 8px;cursor:pointer;text-align:center;transition:all .2s;position:relative}
-.vc:hover,.vc.sel{border-color:var(--a1);background:rgba(59,130,246,.07);box-shadow:0 0 12px rgba(59,130,246,.12)}
-.vc.sel::after{content:'✓';position:absolute;top:5px;right:7px;font-size:9px;font-weight:800;color:var(--a2)}
-.vc-em{font-size:22px;display:block;margin-bottom:4px}
-.vc-nm{font-size:11px;font-weight:700}
-.vc-ds{font-size:9px;color:var(--dim);font-family:'JetBrains Mono',monospace;margin-top:2px}
-
-/* ── Sliders ── */
-.sl-row{display:flex;align-items:center;gap:10px;margin-bottom:12px}
-.sl-lbl{font-size:12px;font-weight:600;color:var(--dim);min-width:72px}
-.sl-val{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--a2);min-width:52px;text-align:right}
-input[type=range]{flex:1;height:4px;background:var(--border2);border-radius:4px;outline:none;-webkit-appearance:none;cursor:pointer}
-input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;background:var(--a1);border-radius:50%;box-shadow:0 0 6px rgba(59,130,246,.5)}
-
-/* ── TTS Play button ── */
-.tts-actions{display:flex;gap:8px;margin-top:8px}
-.btn{padding:10px 18px;border-radius:10px;border:none;font-family:'Outfit',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:7px}
-.btn-prim{background:linear-gradient(135deg,var(--a1),#2563eb);color:#fff}
-.btn-prim:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(59,130,246,.35)}
-.btn-sec{background:var(--s2);border:1px solid var(--border2);color:var(--dim)}
-.btn-sec:hover{border-color:var(--a2);color:var(--a2)}
-.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
-.btn-full{width:100%;justify-content:center;padding:14px}
-
-/* ── SFX grid ── */
-.sfx-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-.sfx-item{background:var(--s2);border:1px solid var(--border2);border-radius:10px;padding:10px 6px;cursor:pointer;text-align:center;transition:all .2s}
-.sfx-item:hover{border-color:var(--a3)}
-.sfx-item.sel{border-color:var(--a3);background:rgba(245,158,11,.07)}
-.sfx-em{font-size:20px;display:block;margin-bottom:3px}
-.sfx-nm{font-size:9px;color:var(--dim);font-family:'JetBrains Mono',monospace}
-
-/* ── Toggle ── */
+.cbar{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--dimmer);text-align:right;margin-top:3px}
+.sl-row{display:flex;align-items:center;gap:10px;margin-bottom:11px}
+.sl-lbl{font-size:11px;font-weight:600;color:var(--dim);min-width:76px;letter-spacing:.3px}
+.sl-val{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--a2);min-width:46px;text-align:right}
+input[type=range]{flex:1;height:3px;background:var(--border2);border-radius:3px;-webkit-appearance:none;outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;background:var(--a1);border-radius:50%;box-shadow:0 0 8px rgba(99,102,241,.5);cursor:pointer}
+.btn{padding:10px 16px;border-radius:10px;border:none;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:7px;letter-spacing:.2px}
+.btn-primary{background:linear-gradient(135deg,var(--a1),var(--a5));color:#fff}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 22px rgba(99,102,241,.4)}
+.btn-ghost{background:var(--s2);border:1px solid var(--border2);color:var(--dim)}
+.btn-ghost:hover{border-color:var(--a2);color:var(--a2)}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none !important}
+.tts-status{display:none;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:11px;padding:9px 12px;border-radius:9px;background:var(--s2);border:1px solid var(--border2);margin-top:10px}
+.st-dot{width:8px;height:8px;border-radius:50%;background:var(--a3);flex-shrink:0;animation:pulse 1.2s infinite}
+.tts-status.speaking .st-dot{background:var(--a2)}
+.tts-status.error .st-dot{background:var(--a4);animation:none}
+.audio-player-wrap{display:none;margin-top:12px;background:var(--s2);border:1px solid var(--border2);border-radius:11px;padding:13px;display:none}
+.audio-player-wrap.visible{display:flex;align-items:center;gap:10px}
+.sfx-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
+.sfx-card{background:var(--s2);border:1px solid var(--border2);border-radius:10px;padding:10px 6px;cursor:pointer;text-align:center;transition:all .2s}
+.sfx-card:hover{border-color:var(--a3)}
+.sfx-card.sel{border-color:var(--a3);background:rgba(245,158,11,.07)}
+.sfx-icon{font-size:20px;display:block;margin-bottom:3px}
+.sfx-name{font-size:9px;color:var(--dim);font-family:'JetBrains Mono',monospace}
 .tog-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
 .tog-lbl{font-size:12px;color:var(--dim);font-weight:600}
-.tog{width:38px;height:20px;border-radius:10px;background:var(--border2);cursor:pointer;position:relative;transition:background .2s}
+.tog{width:38px;height:21px;border-radius:11px;background:var(--border2);cursor:pointer;position:relative;transition:background .2s;flex-shrink:0}
 .tog.on{background:var(--a2)}
-.tog::after{content:'';position:absolute;top:3px;left:3px;width:14px;height:14px;background:#fff;border-radius:50%;transition:left .2s}
-.tog.on::after{left:21px}
-
-/* ── Quality grid ── */
+.tog::after{content:'';position:absolute;top:3px;left:3px;width:15px;height:15px;background:#fff;border-radius:50%;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.tog.on::after{left:20px}
 .q-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:12px}
 .q-btn{background:var(--s2);border:1px solid var(--border2);border-radius:10px;padding:9px 4px;cursor:pointer;text-align:center;transition:all .2s}
-.q-btn:hover,.q-btn.sel{border-color:var(--a4);background:rgba(236,72,153,.07)}
-.q-btn .q-r{font-size:12px;font-weight:800;display:block}
-.q-btn .q-l{font-size:8px;color:var(--dimmer);font-family:'JetBrains Mono',monospace;margin-top:2px;display:block}
+.q-btn:hover,.q-btn.sel{border-color:var(--a4);background:rgba(244,63,94,.06)}
+.q-r{font-size:11px;font-weight:800;display:block;font-family:'Syne',sans-serif}
+.q-l{font-size:8px;color:var(--dimmer);font-family:'JetBrains Mono',monospace;margin-top:2px;display:block}
 .q-btn.sel .q-r{color:var(--a4)}
-
-/* ── Format row ── */
 .fmt-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
-.f-btn{padding:6px 12px;border-radius:8px;border:1px solid var(--border2);background:var(--s2);color:var(--dim);font-family:'JetBrains Mono',monospace;font-size:11px;cursor:pointer;transition:all .2s}
-.f-btn:hover,.f-btn.sel{border-color:var(--a2);color:var(--a2);background:rgba(6,214,160,.07)}
-
-/* ── Select ── */
-select{background:var(--s2);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:11px;padding:6px 10px;outline:none;cursor:pointer;width:100%}
+.fb{padding:6px 12px;border-radius:8px;border:1px solid var(--border2);background:var(--s2);color:var(--dim);font-family:'JetBrains Mono',monospace;font-size:11px;cursor:pointer;transition:all .2s}
+.fb:hover,.fb.sel{border-color:var(--a2);color:var(--a2);background:rgba(16,185,129,.07)}
+select{background:var(--s2);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:11px;padding:7px 11px;outline:none;cursor:pointer;width:100%;margin-bottom:10px}
 select:focus{border-color:var(--a1)}
-
-/* ── Layers ── */
 .layers{display:flex;flex-direction:column;gap:7px}
-.layer{display:flex;align-items:center;gap:8px;background:var(--s2);border:1px solid var(--border2);border-radius:10px;padding:9px 12px}
-.l-icon{font-size:15px}
-.l-name{flex:1;font-size:12px;font-weight:700}
+.layer{display:flex;align-items:center;gap:9px;background:var(--s2);border:1px solid var(--border2);border-radius:10px;padding:9px 13px}
+.l-ico{font-size:14px}.l-nm{flex:1;font-size:12px;font-weight:700}
 .l-meta{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--dim)}
-.l-del{background:none;border:none;color:var(--dimmer);cursor:pointer;font-size:13px;border-radius:5px;padding:2px 5px;transition:color .15s}
-.l-del:hover{color:#f87171}
-.add-layer-btn{width:100%;padding:8px;border:1px dashed var(--border2);border-radius:9px;background:none;color:var(--dimmer);font-family:'Outfit',sans-serif;font-size:12px;cursor:pointer;transition:all .2s;margin-top:6px}
-.add-layer-btn:hover{border-color:var(--a1);color:var(--a1)}
-
-/* ── Render button ── */
-.render-btn{width:100%;padding:15px;border:none;border-radius:12px;background:linear-gradient(135deg,var(--a2),#059669);color:#000;font-family:'Outfit',sans-serif;font-size:15px;font-weight:800;cursor:pointer;letter-spacing:.3px;transition:all .25s;position:relative;overflow:hidden}
-.render-btn:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(6,214,160,.3)}
-.render-btn:active{transform:translateY(0)}
-.render-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
-.render-btn::before{content:'';position:absolute;top:-50%;left:-60%;width:35%;height:200%;background:rgba(255,255,255,.2);transform:skewX(-20deg);transition:left .5s}
+.l-del{background:none;border:none;color:var(--dimmer);cursor:pointer;font-size:13px;padding:2px 5px;border-radius:5px;transition:color .15s}
+.l-del:hover{color:var(--a4)}
+.render-btn{width:100%;padding:15px;border:none;border-radius:13px;background:linear-gradient(135deg,var(--a2),#059669);color:#000;font-family:'Syne',sans-serif;font-size:15px;font-weight:800;cursor:pointer;letter-spacing:.3px;transition:all .25s;position:relative;overflow:hidden}
+.render-btn:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(16,185,129,.35)}
+.render-btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.render-btn::before{content:'';position:absolute;top:-50%;left:-60%;width:35%;height:200%;background:rgba(255,255,255,.15);transform:skewX(-20deg);transition:left .5s}
 .render-btn:hover::before{left:130%}
-
-/* ── Progress ── */
 .prog-wrap{display:none;margin-top:12px}
-.prog-top{display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--dim);margin-bottom:6px}
-.prog-track{height:6px;background:var(--border2);border-radius:6px;overflow:hidden}
-.prog-fill{height:100%;width:0;background:linear-gradient(90deg,var(--a2),var(--a1));border-radius:6px;transition:width .4s ease}
-.prog-steps{margin-top:8px;display:flex;flex-direction:column;gap:3px}
-.prog-step{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--dimmer);display:flex;align-items:center;gap:6px;opacity:.4;transition:opacity .3s}
-.prog-step.done{opacity:1;color:var(--a2)}
-.prog-step.active{opacity:1;color:var(--a3)}
-.prog-step::before{content:'○';font-size:8px}
-.prog-step.done::before{content:'●';color:var(--a2)}
-.prog-step.active::before{content:'◉';color:var(--a3);animation:spin .8s linear infinite}
+.prog-top{display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--dim);margin-bottom:7px}
+.prog-track{height:5px;background:var(--border2);border-radius:5px;overflow:hidden}
+.prog-fill{height:100%;width:0;background:linear-gradient(90deg,var(--a2),var(--a1));border-radius:5px;transition:width .4s ease}
+.prog-steps{margin-top:9px;display:flex;flex-direction:column;gap:3px}
+.pstep{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--dimmer);display:flex;align-items:center;gap:7px;opacity:.35;transition:opacity .3s}
+.pstep::before{content:'○';font-size:9px;flex-shrink:0}
+.pstep.done{opacity:1;color:var(--a2)}.pstep.done::before{content:'●'}
+.pstep.active{opacity:1;color:var(--a3)}.pstep.active::before{content:'◉';animation:spin .9s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-
-/* ── Download section ── */
-.download-wrap{display:none;margin-top:12px;padding:14px;background:rgba(6,214,160,.06);border:1px solid rgba(6,214,160,.25);border-radius:12px}
-.dl-header{font-size:13px;font-weight:700;color:var(--a2);margin-bottom:10px;display:flex;align-items:center;gap:7px}
-.dl-btn{display:flex;align-items:center;gap:8px;width:100%;padding:11px 14px;border-radius:10px;border:1px solid rgba(6,214,160,.3);background:rgba(6,214,160,.08);color:var(--a2);font-family:'Outfit',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;margin-bottom:7px;text-decoration:none}
-.dl-btn:hover{background:rgba(6,214,160,.15);border-color:var(--a2);transform:translateX(3px)}
-.dl-btn-sec{border-color:rgba(59,130,246,.3);background:rgba(59,130,246,.07);color:var(--a1)}
-.dl-btn-sec:hover{background:rgba(59,130,246,.13);border-color:var(--a1)}
-.dl-info{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--dimmer);margin-top:4px}
-
-/* ── Toast ── */
-.toast{position:fixed;bottom:24px;right:24px;background:var(--s1);border:1px solid var(--border2);border-radius:12px;padding:12px 18px;font-size:13px;color:var(--text);transform:translateX(calc(100% + 30px));transition:transform .3s ease;z-index:999;box-shadow:0 8px 32px rgba(0,0,0,.5);max-width:280px;display:flex;align-items:center;gap:8px}
+.dl-wrap{display:none;margin-top:12px;border-radius:12px;overflow:hidden;border:1px solid rgba(16,185,129,.3)}
+.dl-head{padding:12px 15px;background:rgba(16,185,129,.07);font-size:13px;font-weight:700;color:var(--a2);border-bottom:1px solid rgba(16,185,129,.2)}
+.dl-body{padding:13px 15px;display:flex;flex-direction:column;gap:8px}
+.dl-btn{display:flex;align-items:center;gap:9px;padding:11px 14px;border-radius:10px;border:1px solid rgba(16,185,129,.3);background:rgba(16,185,129,.07);color:var(--a2);font-family:'Syne',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;text-decoration:none}
+.dl-btn:hover{background:rgba(16,185,129,.14);border-color:var(--a2);transform:translateX(3px)}
+.dl-btn.indigo{border-color:rgba(99,102,241,.3);background:rgba(99,102,241,.07);color:var(--a1)}
+.dl-btn.indigo:hover{background:rgba(99,102,241,.14);border-color:var(--a1)}
+.dl-info{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--dimmer);padding-top:4px}
+.toast{position:fixed;bottom:24px;right:24px;background:var(--s1);border:1px solid var(--border2);border-radius:13px;padding:12px 17px;display:flex;align-items:center;gap:9px;font-size:13px;color:var(--text);transform:translateX(calc(100% + 30px));transition:transform .3s cubic-bezier(.34,1.56,.64,1);z-index:500;box-shadow:0 10px 40px rgba(0,0,0,.6);max-width:300px}
 .toast.show{transform:translateX(0)}
-
-/* ── TTS status ── */
-.tts-status{font-family:'JetBrains Mono',monospace;font-size:11px;padding:8px 12px;border-radius:8px;background:var(--s2);border:1px solid var(--border2);margin-top:8px;display:none;align-items:center;gap:8px}
-.tts-dot{width:8px;height:8px;border-radius:50%;background:var(--a3);flex-shrink:0;animation:blink 1s infinite}
-.tts-status.speaking .tts-dot{background:var(--a2);animation:blink .5s infinite}
-
-/* ── Scrollbar ── */
-::-webkit-scrollbar{width:4px}
-::-webkit-scrollbar-track{background:var(--bg)}
-::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
-
-/* ── Responsive ── */
-@media(max-width:900px){
-  .workspace{grid-template-columns:1fr;height:auto}
-  .left-col,.right-col{border:none}
-  .voice-grid{grid-template-columns:repeat(4,1fr)}
-  .q-grid{grid-template-columns:repeat(4,1fr)}
-}
-@media(max-width:580px){
-  .voice-grid{grid-template-columns:1fr 1fr 1fr 1fr}
-  .sfx-grid{grid-template-columns:repeat(4,1fr)}
-}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
+@media(max-width:860px){.workspace{grid-template-columns:1fr;height:auto}.lcol{border-right:none;border-bottom:1px solid var(--border)}}
 </style>
 </head>
 <body>
-<div class="app">
 
-<!-- HEADER -->
 <header>
   <div class="logo">
     <div class="logo-mark">🎙</div>
-    <div class="logo-name">Voice<em>Sync</em> Studio</div>
+    <div class="logo-text">Voice<b>Sync</b> Studio</div>
   </div>
-  <div class="hdr-right">
-    <span class="pill live">● LIVE</span>
-    <span class="pill">v2.0</span>
+  <div class="hdr-pills">
+    <span class="hpill live">LIVE</span>
+    <span class="hpill">REAL HUMAN VOICES</span>
   </div>
 </header>
 
 <div class="workspace">
-<!-- ══════════════ LEFT COLUMN ══════════════ -->
-<div class="left-col">
+<div class="lcol">
 
-  <!-- VIDEO UPLOAD + PREVIEW -->
+  <!-- VIDEO UPLOAD -->
   <div class="card">
-    <div class="card-head">
-      <span class="ch-icon">🎬</span>
-      <h2>Video Source</h2>
-      <span class="badge green" id="vidBadge">No Video</span>
-    </div>
-    <div class="card-body">
-
-      <!-- Drop Zone -->
+    <div class="card-hd"><span class="ico">🎬</span><h3>Video Source</h3><span class="tag green" id="vidTag">No Video</span></div>
+    <div class="cb">
       <div class="drop-zone" id="dropZone">
         <input type="file" id="videoFile" accept="video/*">
         <div class="dz-icon">📹</div>
-        <div class="dz-title">Drop your video here</div>
-        <div class="dz-sub">or click to browse</div>
-        <div class="dz-formats">
-          <span class="fmt-chip">MP4</span><span class="fmt-chip">MOV</span>
-          <span class="fmt-chip">AVI</span><span class="fmt-chip">MKV</span>
-          <span class="fmt-chip">WEBM</span><span class="fmt-chip">FLV</span>
-        </div>
+        <div class="dz-h">Drop your video here</div>
+        <div class="dz-s">or click to browse files</div>
+        <div class="dz-chips"><span class="chip">MP4</span><span class="chip">MOV</span><span class="chip">AVI</span><span class="chip">MKV</span><span class="chip">WEBM</span><span class="chip">FLV</span></div>
       </div>
-
-      <!-- Video Player -->
       <div id="videoWrap">
-        <div class="vp-container" id="vpContainer">
-          <video id="videoEl" preload="metadata"></video>
-          <div class="vp-controls" id="vpControls">
-            <button class="vc-btn" id="playBtn" onclick="togglePlay()">▶</button>
-            <span class="vc-time" id="timeDisplay">0:00 / 0:00</span>
-            <div class="vc-seek" id="seekBar" onclick="seekVideo(event)">
-              <div class="vc-seek-fill" id="seekFill" style="width:0%"></div>
-            </div>
-            <button class="vc-btn" id="muteBtn" onclick="toggleMute()">🔊</button>
-            <button class="vc-btn" onclick="toggleFull()">⛶</button>
+        <div class="player-shell" id="playerShell">
+          <video id="vid" preload="metadata" playsinline></video>
+          <div class="vid-ctrl">
+            <button class="vbtn" id="playBtn" onclick="togglePlay()">▶</button>
+            <span class="vtime" id="vtimeEl">0:00 / 0:00</span>
+            <div class="seek" id="seekBar" onclick="seekVid(event)"><div class="seek-fill" id="seekFill" style="width:0%"></div></div>
+            <button class="vbtn" id="muteBtn" onclick="toggleMute()">🔊</button>
+            <button class="vbtn" onclick="goFull()">⛶</button>
           </div>
         </div>
+        <div class="vinfo" id="vinfoEl"></div>
+        <div class="wave-wrap" id="waveWrap" style="display:none"><div class="wlabel">AUDIO TRACK</div><canvas id="wave"></canvas></div>
+      </div>
+    </div>
+  </div>
 
-        <div class="vinfo" id="vinfoBar"></div>
-
-        <!-- Waveform canvas -->
-        <div class="waveform-wrap" id="waveWrap">
-          <div class="wf-label">AUDIO WAVEFORM</div>
-          <canvas id="waveCanvas" height="64"></canvas>
+  <!-- VOICE ENGINE -->
+  <div class="card">
+    <div class="card-hd"><span class="ico">🧬</span><h3>Human Voice Engine</h3><span class="tag violet">ELEVENLABS AI</span></div>
+    <div class="cb">
+      <div class="api-banner">
+        <div class="ab-icon">🔑</div>
+        <div class="ab-body">
+          <div class="ab-title">ElevenLabs API — Ultra-Realistic Human Voices</div>
+          <div class="ab-sub">Free: 10,000 chars/month · No credit card · Sounds like a real person</div>
         </div>
+        <a href="https://elevenlabs.io" target="_blank">Get Free Key →</a>
+      </div>
+      <div class="key-row">
+        <input class="key-input" type="password" id="apiKey" placeholder="Paste your ElevenLabs API key here…">
+        <button class="key-btn" id="keyBtn" onclick="saveKey()">Connect</button>
       </div>
 
+      <div class="sdiv">Filter by Language</div>
+      <div class="lang-row" id="langRow">
+        <div class="lb sel" data-lang="all" onclick="filterLang(this)">🌍 All</div>
+        <div class="lb" data-lang="en" onclick="filterLang(this)">🇬🇧 English</div>
+        <div class="lb" data-lang="hi" onclick="filterLang(this)">🇮🇳 Hindi</div>
+        <div class="lb" data-lang="ml" onclick="filterLang(this)">🇮🇳 Malayalam</div>
+        <div class="lb" data-lang="ta" onclick="filterLang(this)">🇮🇳 Tamil</div>
+        <div class="lb" data-lang="fr" onclick="filterLang(this)">🇫🇷 French</div>
+        <div class="lb" data-lang="de" onclick="filterLang(this)">🇩🇪 German</div>
+        <div class="lb" data-lang="ar" onclick="filterLang(this)">🇸🇦 Arabic</div>
+        <div class="lb" data-lang="es" onclick="filterLang(this)">🇪🇸 Spanish</div>
+        <div class="lb" data-lang="ja" onclick="filterLang(this)">🇯🇵 Japanese</div>
+        <div class="lb" data-lang="zh" onclick="filterLang(this)">🇨🇳 Chinese</div>
+      </div>
+
+      <div class="sdiv">Your Script</div>
+      <textarea id="scriptTxt" placeholder="Type your script here…&#10;&#10;Example: 'Hey guys! Welcome back to the channel. Today we are exploring something absolutely mind-blowing…'" oninput="updCC()"></textarea>
+      <div class="cbar" id="cbar">0 / 5000 chars</div>
+
+      <div class="sdiv" style="margin-top:12px">Voice Fine-Tuning</div>
+      <div class="sl-row"><span class="sl-lbl">Stability</span><input type="range" min="0" max="1" step="0.01" value="0.5" id="stab" oninput="updSl(this,'stabVal')"><span class="sl-val" id="stabVal">0.50</span></div>
+      <div class="sl-row"><span class="sl-lbl">Similarity</span><input type="range" min="0" max="1" step="0.01" value="0.75" id="sim" oninput="updSl(this,'simVal')"><span class="sl-val" id="simVal">0.75</span></div>
+      <div class="sl-row"><span class="sl-lbl">Style Exag.</span><input type="range" min="0" max="1" step="0.01" value="0.35" id="sty" oninput="updSl(this,'styVal')"><span class="sl-val" id="styVal">0.35</span></div>
+
+      <div class="tts-status" id="ttsStatus"><div class="st-dot"></div><span id="ttsMsg">Generating…</span></div>
+
+      <!-- Generated audio player -->
+      <div class="audio-player-wrap" id="audioPlayerWrap">
+        <button class="btn btn-primary" style="padding:8px 14px;font-size:12px;flex-shrink:0" onclick="toggleAudio()" id="audioPlayBtn">▶ Play</button>
+        <div style="flex:1">
+          <div style="font-size:12px;font-weight:700;margin-bottom:3px" id="audioVoiceName">—</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--dim)" id="audioDur">0:00</div>
+        </div>
+        <a id="audioDownBtn" class="btn btn-ghost" style="padding:8px 12px;font-size:12px;flex-shrink:0" download="voice.mp3">⬇ Save MP3</a>
+      </div>
+      <audio id="audioEl"></audio>
+
+      <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
+        <button class="btn btn-primary" onclick="generateSpeech()" id="genBtn">🎙 Generate Real Voice</button>
+        <button class="btn btn-ghost" onclick="stopAudio()">⏹ Stop</button>
+        <button class="btn btn-ghost" onclick="addVoiceLayer()">＋ Add to Mix</button>
+      </div>
     </div>
   </div>
 
-  <!-- TTS + VOICE SETTINGS -->
+  <!-- VOICE LIBRARY -->
   <div class="card">
-    <div class="card-head">
-      <span class="ch-icon">🗣️</span>
-      <h2>Voice Over / TTS</h2>
-      <span class="badge">AI SPEECH</span>
-    </div>
-    <div class="card-body">
-
-      <div class="sdiv">Language</div>
-      <div class="lang-wrap" id="langWrap">
-        <div class="lang-btn active" data-lang="en-GB" onclick="selLang(this)">🇬🇧 English</div>
-        <div class="lang-btn" data-lang="ml-IN" onclick="selLang(this)">🇮🇳 Malayalam</div>
-        <div class="lang-btn" data-lang="hi-IN" onclick="selLang(this)">🇮🇳 Hindi</div>
-        <div class="lang-btn" data-lang="ta-IN" onclick="selLang(this)">🇮🇳 Tamil</div>
-        <div class="lang-btn" data-lang="te-IN" onclick="selLang(this)">🇮🇳 Telugu</div>
-        <div class="lang-btn" data-lang="fr-FR" onclick="selLang(this)">🇫🇷 French</div>
-        <div class="lang-btn" data-lang="de-DE" onclick="selLang(this)">🇩🇪 German</div>
-        <div class="lang-btn" data-lang="ar-SA" onclick="selLang(this)">🇸🇦 Arabic</div>
-        <div class="lang-btn" data-lang="zh-CN" onclick="selLang(this)">🇨🇳 Chinese</div>
-        <div class="lang-btn" data-lang="ja-JP" onclick="selLang(this)">🇯🇵 Japanese</div>
-        <div class="lang-btn" data-lang="es-ES" onclick="selLang(this)">🇪🇸 Spanish</div>
-        <div class="lang-btn" data-lang="pt-BR" onclick="selLang(this)">🇧🇷 Portuguese</div>
-      </div>
-
-      <div class="sdiv" style="margin-top:12px">Script / Text</div>
-      <textarea id="scriptTxt" placeholder="Type your script here…&#10;&#10;The AI will speak this text in the selected language and voice." oninput="updCC()"></textarea>
-      <div class="char-bar" id="charBar">0 / 5000</div>
-
-      <div class="sdiv" style="margin-top:12px">Voice Character</div>
-      <div class="voice-grid">
-        <div class="vc sel" data-pitch="0.85" data-rate="0.95" onclick="selVoice(this)"><span class="vc-em">👨</span><span class="vc-nm">Deep Male</span><span class="vc-ds">Authoritative</span></div>
-        <div class="vc" data-pitch="1.0" data-rate="1.05" onclick="selVoice(this)"><span class="vc-em">🧔</span><span class="vc-nm">Casual Male</span><span class="vc-ds">Friendly</span></div>
-        <div class="vc" data-pitch="1.2" data-rate="1.0" onclick="selVoice(this)"><span class="vc-em">👩</span><span class="vc-nm">Pro Female</span><span class="vc-ds">Professional</span></div>
-        <div class="vc" data-pitch="1.15" data-rate="0.95" onclick="selVoice(this)"><span class="vc-em">👩‍🦱</span><span class="vc-nm">Warm Female</span><span class="vc-ds">Engaging</span></div>
-        <div class="vc" data-pitch="1.6" data-rate="1.15" onclick="selVoice(this)"><span class="vc-em">👦</span><span class="vc-nm">Kid Boy</span><span class="vc-ds">Energetic</span></div>
-        <div class="vc" data-pitch="1.8" data-rate="1.1" onclick="selVoice(this)"><span class="vc-em">👧</span><span class="vc-nm">Kid Girl</span><span class="vc-ds">Cheerful</span></div>
-        <div class="vc" data-pitch="0.7" data-rate="0.85" onclick="selVoice(this)"><span class="vc-em">👴</span><span class="vc-nm">Elder Male</span><span class="vc-ds">Wise</span></div>
-        <div class="vc" data-pitch="0.9" data-rate="0.88" onclick="selVoice(this)"><span class="vc-em">🎙️</span><span class="vc-nm">Narrator</span><span class="vc-ds">Cinematic</span></div>
-      </div>
-
-      <div class="sdiv" style="margin-top:12px">Voice Controls</div>
-      <div class="sl-row"><span class="sl-lbl">Speed</span><input type="range" min="0.5" max="2" step="0.05" value="1" id="rateSlider" oninput="updSl(this,'rateVal','x')"><span class="sl-val" id="rateVal">1.0x</span></div>
-      <div class="sl-row"><span class="sl-lbl">Pitch</span><input type="range" min="0.5" max="2" step="0.05" value="1" id="pitchSlider" oninput="updSl(this,'pitchVal','')"><span class="sl-val" id="pitchVal">1.0</span></div>
-      <div class="sl-row"><span class="sl-lbl">Volume</span><input type="range" min="0" max="1" step="0.01" value="1" id="volSlider" oninput="updSl(this,'volVal','','vol')"><span class="sl-val" id="volVal">100%</span></div>
-
-      <!-- Status -->
-      <div class="tts-status" id="ttsStatus">
-        <div class="tts-dot"></div>
-        <span id="ttsStatusTxt">Preparing speech…</span>
-      </div>
-
-      <div class="tts-actions">
-        <button class="btn btn-prim" onclick="previewTTS()" id="ttsBtn">▶ Preview Voice</button>
-        <button class="btn btn-sec" onclick="stopTTS()" id="stopBtn">⏹ Stop</button>
-        <button class="btn btn-sec" onclick="addVoiceLayer()">＋ Add to Mix</button>
-      </div>
-
+    <div class="card-hd"><span class="ico">🧑‍🎤</span><h3>Human Voice Library</h3><span class="tag blue" id="voiceCountTag">20 voices</span></div>
+    <div class="cb">
+      <div class="voice-list" id="voiceList"></div>
     </div>
   </div>
 
-  <!-- SOUND EFFECTS -->
+  <!-- SFX -->
   <div class="card">
-    <div class="card-head">
-      <span class="ch-icon">🔊</span>
-      <h2>Sound Effects</h2>
-      <span class="badge amber">SFX LIBRARY</span>
-    </div>
-    <div class="card-body">
-      <div class="sdiv">Pick Effects</div>
-      <div class="sfx-grid" id="sfxGrid">
-        <div class="sfx-item" onclick="togSFX(this,'cinematic')"><span class="sfx-em">🎵</span><span class="sfx-nm">Cinematic</span></div>
-        <div class="sfx-item" onclick="togSFX(this,'whoosh')"><span class="sfx-em">⚡</span><span class="sfx-nm">Whoosh</span></div>
-        <div class="sfx-item" onclick="togSFX(this,'impact')"><span class="sfx-em">💥</span><span class="sfx-nm">Impact</span></div>
-        <div class="sfx-item" onclick="togSFX(this,'bell')"><span class="sfx-em">🔔</span><span class="sfx-nm">Bell</span></div>
-        <div class="sfx-item" onclick="togSFX(this,'ocean')"><span class="sfx-em">🌊</span><span class="sfx-nm">Ocean</span></div>
-        <div class="sfx-item" onclick="togSFX(this,'rain')"><span class="sfx-em">🌧️</span><span class="sfx-nm">Rain</span></div>
-        <div class="sfx-item" onclick="togSFX(this,'city')"><span class="sfx-em">🏙️</span><span class="sfx-nm">City</span></div>
-        <div class="sfx-item" onclick="togSFX(this,'forest')"><span class="sfx-em">🌲</span><span class="sfx-nm">Forest</span></div>
-        <div class="sfx-item" onclick="togSFX(this,'fire')"><span class="sfx-em">🔥</span><span class="sfx-nm">Fire</span></div>
-        <div class="sfx-item" onclick="togSFX(this,'drama')"><span class="sfx-em">🎭</span><span class="sfx-nm">Drama</span></div>
-        <div class="sfx-item" onclick="togSFX(this,'scifi')"><span class="sfx-em">🚀</span><span class="sfx-nm">Sci-Fi</span></div>
-        <div class="sfx-item" onclick="togSFX(this,'fanfare')"><span class="sfx-em">🎺</span><span class="sfx-nm">Fanfare</span></div>
-        <div class="sfx-item" onclick="togSFX(this,'laugh')"><span class="sfx-em">😂</span><span class="sfx-nm">Applause</span></div>
-        <div class="sfx-item" onclick="togSFX(this,'drums')"><span class="sfx-em">🥁</span><span class="sfx-nm">Drum Roll</span></div>
-        <div class="sfx-item" onclick="togSFX(this,'chime')"><span class="sfx-em">✨</span><span class="sfx-nm">Chime</span></div>
-        <div class="sfx-item" onclick="togSFX(this,'wind')"><span class="sfx-em">💨</span><span class="sfx-nm">Wind</span></div>
+    <div class="card-hd"><span class="ico">🔊</span><h3>Sound Effects</h3><span class="tag amber">SFX</span></div>
+    <div class="cb">
+      <div class="sfx-grid">
+        <div class="sfx-card" onclick="togSFX(this,'cinematic')"><span class="sfx-icon">🎵</span><span class="sfx-name">Cinematic</span></div>
+        <div class="sfx-card" onclick="togSFX(this,'whoosh')"><span class="sfx-icon">⚡</span><span class="sfx-name">Whoosh</span></div>
+        <div class="sfx-card" onclick="togSFX(this,'impact')"><span class="sfx-icon">💥</span><span class="sfx-name">Impact</span></div>
+        <div class="sfx-card" onclick="togSFX(this,'bell')"><span class="sfx-icon">🔔</span><span class="sfx-name">Bell</span></div>
+        <div class="sfx-card" onclick="togSFX(this,'ocean')"><span class="sfx-icon">🌊</span><span class="sfx-name">Ocean</span></div>
+        <div class="sfx-card" onclick="togSFX(this,'rain')"><span class="sfx-icon">🌧️</span><span class="sfx-name">Rain</span></div>
+        <div class="sfx-card" onclick="togSFX(this,'city')"><span class="sfx-icon">🏙️</span><span class="sfx-name">City</span></div>
+        <div class="sfx-card" onclick="togSFX(this,'forest')"><span class="sfx-icon">🌲</span><span class="sfx-name">Forest</span></div>
+        <div class="sfx-card" onclick="togSFX(this,'fire')"><span class="sfx-icon">🔥</span><span class="sfx-name">Fire</span></div>
+        <div class="sfx-card" onclick="togSFX(this,'drama')"><span class="sfx-icon">🎭</span><span class="sfx-name">Drama</span></div>
+        <div class="sfx-card" onclick="togSFX(this,'scifi')"><span class="sfx-icon">🚀</span><span class="sfx-name">Sci-Fi</span></div>
+        <div class="sfx-card" onclick="togSFX(this,'fanfare')"><span class="sfx-icon">🎺</span><span class="sfx-name">Fanfare</span></div>
+        <div class="sfx-card" onclick="togSFX(this,'drums')"><span class="sfx-icon">🥁</span><span class="sfx-name">Drums</span></div>
+        <div class="sfx-card" onclick="togSFX(this,'chime')"><span class="sfx-icon">✨</span><span class="sfx-name">Chime</span></div>
+        <div class="sfx-card" onclick="togSFX(this,'wind')"><span class="sfx-icon">💨</span><span class="sfx-name">Wind</span></div>
+        <div class="sfx-card" onclick="togSFX(this,'applause')"><span class="sfx-icon">👏</span><span class="sfx-name">Applause</span></div>
       </div>
-
-      <div class="sdiv" style="margin-top:12px">Upload Custom Audio</div>
+      <div class="sdiv" style="margin-top:14px">Upload Custom Audio</div>
       <div class="drop-zone" style="padding:18px" onclick="document.getElementById('sfxFile').click()">
-        <input type="file" id="sfxFile" accept="audio/*" style="display:none" onchange="handleSFXUpload(this)">
-        <div style="font-size:26px;margin-bottom:6px">🎧</div>
-        <div class="dz-sub">MP3 · WAV · AAC · OGG · M4A</div>
+        <input type="file" id="sfxFile" accept="audio/*" style="display:none" onchange="handleAudioUpload(this)">
+        <div style="font-size:26px;margin-bottom:5px">🎧</div>
+        <div class="dz-s">MP3 · WAV · AAC · OGG · M4A</div>
       </div>
     </div>
   </div>
 
-</div><!-- /left-col -->
+</div><!-- /lcol -->
 
-<!-- ══════════════ RIGHT COLUMN ══════════════ -->
-<div class="right-col">
+<div class="rcol">
 
-  <!-- AUDIO LAYERS -->
+  <!-- MIX LAYERS -->
   <div class="card">
-    <div class="card-head">
-      <span class="ch-icon">🎛️</span>
-      <h2>Audio Mix Layers</h2>
-    </div>
-    <div class="card-body">
+    <div class="card-hd"><span class="ico">🎛️</span><h3>Audio Mix Layers</h3></div>
+    <div class="cb">
       <div class="layers" id="layersList">
-        <div class="layer">
-          <span class="l-icon">🎵</span>
-          <span class="l-name">No layers yet</span>
-          <span class="l-meta">Add voice or SFX →</span>
-        </div>
+        <div class="layer"><span class="l-ico">🎵</span><span class="l-nm" style="color:var(--dimmer)">No layers — add voice or SFX</span></div>
       </div>
-      <button class="add-layer-btn" onclick="toast('Use the Voice Over or SFX sections to add layers.')">＋ Add Layer</button>
     </div>
   </div>
 
   <!-- BG MUSIC -->
   <div class="card">
-    <div class="card-head">
-      <span class="ch-icon">🎵</span>
-      <h2>Background Music</h2>
-    </div>
-    <div class="card-body">
-      <div class="sfx-grid" style="grid-template-columns:repeat(3,1fr)">
-        <div class="sfx-item" onclick="togSFX(this,'ambient')"><span class="sfx-em">🎹</span><span class="sfx-nm">Ambient</span></div>
-        <div class="sfx-item" onclick="togSFX(this,'pop')"><span class="sfx-em">🎸</span><span class="sfx-nm">Upbeat</span></div>
-        <div class="sfx-item" onclick="togSFX(this,'orch')"><span class="sfx-em">🎻</span><span class="sfx-nm">Orchestral</span></div>
-        <div class="sfx-item" onclick="togSFX(this,'hiphop')"><span class="sfx-em">🥁</span><span class="sfx-nm">Hip Hop</span></div>
-        <div class="sfx-item" onclick="togSFX(this,'jazz')"><span class="sfx-em">🎷</span><span class="sfx-nm">Jazz</span></div>
-        <div class="sfx-item" onclick="togSFX(this,'cine')"><span class="sfx-em">🌌</span><span class="sfx-nm">Epic</span></div>
+    <div class="card-hd"><span class="ico">🎵</span><h3>Background Music</h3></div>
+    <div class="cb">
+      <div class="sfx-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:14px">
+        <div class="sfx-card" onclick="togSFX(this,'ambient')"><span class="sfx-icon">🎹</span><span class="sfx-name">Ambient</span></div>
+        <div class="sfx-card" onclick="togSFX(this,'pop')"><span class="sfx-icon">🎸</span><span class="sfx-name">Upbeat</span></div>
+        <div class="sfx-card" onclick="togSFX(this,'orch')"><span class="sfx-icon">🎻</span><span class="sfx-name">Orchestral</span></div>
+        <div class="sfx-card" onclick="togSFX(this,'hiphop')"><span class="sfx-icon">🥁</span><span class="sfx-name">Hip Hop</span></div>
+        <div class="sfx-card" onclick="togSFX(this,'jazz')"><span class="sfx-icon">🎷</span><span class="sfx-name">Jazz</span></div>
+        <div class="sfx-card" onclick="togSFX(this,'epic')"><span class="sfx-icon">🌌</span><span class="sfx-name">Epic</span></div>
       </div>
-      <div class="sdiv" style="margin-top:12px">Mix Controls</div>
-      <div class="sl-row"><span class="sl-lbl">BG Volume</span><input type="range" min="0" max="100" value="30" oninput="updSl(this,'bgvVal','%')"><span class="sl-val" id="bgvVal">30%</span></div>
-      <div class="sl-row"><span class="sl-lbl">Fade In</span><input type="range" min="0" max="5000" value="1000" oninput="updSl(this,'fiVal',' ms')"><span class="sl-val" id="fiVal">1000 ms</span></div>
+      <div class="sl-row"><span class="sl-lbl">BG Volume</span><input type="range" min="0" max="100" value="30" oninput="updSlPct(this,'bgvVal')"><span class="sl-val" id="bgvVal">30%</span></div>
       <div class="tog-row"><span class="tog-lbl">Duck under voice</span><div class="tog on" onclick="this.classList.toggle('on')"></div></div>
       <div class="tog-row"><span class="tog-lbl">Loop background</span><div class="tog on" onclick="this.classList.toggle('on')"></div></div>
     </div>
   </div>
 
-  <!-- EXPORT SETTINGS -->
+  <!-- EXPORT -->
   <div class="card">
-    <div class="card-head">
-      <span class="ch-icon">⚙️</span>
-      <h2>Export Settings</h2>
-    </div>
-    <div class="card-body">
-
+    <div class="card-hd"><span class="ico">⚙️</span><h3>Export Settings</h3></div>
+    <div class="cb">
       <div class="sdiv">Output Quality</div>
       <div class="q-grid">
         <div class="q-btn sel" onclick="selQ(this)"><span class="q-r">4K</span><span class="q-l">2160p</span></div>
@@ -470,498 +373,392 @@ select:focus{border-color:var(--a1)}
         <div class="q-btn" onclick="selQ(this)"><span class="q-r">Custom</span><span class="q-l">Size</span></div>
         <div class="q-btn" onclick="selQ(this)"><span class="q-r">Match</span><span class="q-l">Source</span></div>
       </div>
-
-      <div class="sdiv">Video Format</div>
+      <div class="sdiv">Format</div>
       <div class="fmt-row" id="vfmtRow">
-        <div class="f-btn sel" onclick="selFmt(this,'vfmtRow')">MP4</div>
-        <div class="f-btn" onclick="selFmt(this,'vfmtRow')">MOV</div>
-        <div class="f-btn" onclick="selFmt(this,'vfmtRow')">MKV</div>
-        <div class="f-btn" onclick="selFmt(this,'vfmtRow')">WEBM</div>
+        <div class="fb sel" onclick="selFmt(this,'vfmtRow')">MP4</div>
+        <div class="fb" onclick="selFmt(this,'vfmtRow')">MOV</div>
+        <div class="fb" onclick="selFmt(this,'vfmtRow')">MKV</div>
+        <div class="fb" onclick="selFmt(this,'vfmtRow')">WEBM</div>
       </div>
-
       <div class="sdiv">Codec</div>
-      <select style="margin-bottom:10px"><option>H.264 (AVC)</option><option>H.265 (HEVC)</option><option>VP9</option><option>AV1</option></select>
-      <select style="margin-bottom:10px"><option>AAC Audio</option><option>MP3 Audio</option><option>Opus Audio</option><option>PCM (WAV)</option></select>
-
-      <div class="sl-row"><span class="sl-lbl">Bitrate</span><input type="range" min="2" max="80" value="40" oninput="updSl(this,'brVal',' Mb/s')"><span class="sl-val" id="brVal">40 Mb/s</span></div>
-
+      <select><option>H.264 (AVC)</option><option>H.265 (HEVC)</option><option>VP9</option><option>AV1</option></select>
+      <select><option>AAC Audio</option><option>MP3 Audio</option><option>Opus</option><option>PCM WAV</option></select>
+      <div class="sl-row"><span class="sl-lbl">Bitrate</span><input type="range" min="2" max="80" value="40" oninput="updSlMbps(this,'brVal')"><span class="sl-val" id="brVal">40 Mb/s</span></div>
       <div class="sdiv">Options</div>
       <div class="tog-row"><span class="tog-lbl">HDR Output</span><div class="tog on" onclick="this.classList.toggle('on')"></div></div>
-      <div class="tog-row"><span class="tog-lbl">Noise Reduction</span><div class="tog" onclick="this.classList.toggle('on')"></div></div>
       <div class="tog-row"><span class="tog-lbl">Normalize Audio</span><div class="tog on" onclick="this.classList.toggle('on')"></div></div>
+      <div class="tog-row"><span class="tog-lbl">Noise Reduction</span><div class="tog" onclick="this.classList.toggle('on')"></div></div>
       <div class="tog-row"><span class="tog-lbl">Hardware Accel.</span><div class="tog on" onclick="this.classList.toggle('on')"></div></div>
-
-      <!-- RENDER -->
-      <button class="render-btn" id="renderBtn" onclick="startRender()">🎬 Render & Export Video</button>
-
-      <!-- Progress -->
+      <button class="render-btn" id="renderBtn" onclick="startRender()">🎬 Render &amp; Export Video</button>
       <div class="prog-wrap" id="progWrap">
-        <div class="prog-top">
-          <span id="progStatus">Initialising…</span>
-          <span id="progPct">0%</span>
-        </div>
+        <div class="prog-top"><span id="progStatus">Initialising…</span><span id="progPct">0%</span></div>
         <div class="prog-track"><div class="prog-fill" id="progFill"></div></div>
         <div class="prog-steps" id="progSteps"></div>
       </div>
-
-      <!-- Download area -->
-      <div class="download-wrap" id="dlWrap">
-        <div class="dl-header">🎉 Export Complete!</div>
-        <a class="dl-btn" id="dlVideoBtn" download="voicesync-export.mp4">
-          ⬇ Download Video (MP4)
-        </a>
-        <a class="dl-btn dl-btn-sec" id="dlAudioBtn" download="voicesync-audio.wav">
-          ⬇ Download Audio Only (WAV)
-        </a>
-        <div class="dl-info" id="dlInfo">File ready for download</div>
+      <div class="dl-wrap" id="dlWrap">
+        <div class="dl-head">🎉 Export Complete!</div>
+        <div class="dl-body">
+          <a class="dl-btn" id="dlVideoBtn" download="voicesync-export.mp4">⬇ Download Video (MP4)</a>
+          <a class="dl-btn indigo" id="dlAudioBtn" download="voice.mp3">⬇ Download Voice Audio (MP3)</a>
+          <div class="dl-info" id="dlInfo">Ready for download</div>
+        </div>
       </div>
-
     </div>
   </div>
 
-</div><!-- /right-col -->
+</div><!-- /rcol -->
 </div><!-- /workspace -->
-</div><!-- /app -->
 
-<!-- Toast -->
-<div class="toast" id="toastEl">
-  <span id="toastIco">✅</span>
-  <span id="toastTxt"></span>
-</div>
+<div class="toast" id="toastEl"><span id="toastIco">✅</span><span id="toastTxt"></span></div>
 
 <script>
-/* ═══════════════════════════════════════
-   STATE
-═══════════════════════════════════════ */
-let videoFile = null;
-let audioCtx = null;
-let analyser = null;
-let animFrame = null;
-let currentLang = 'en-GB';
-let currentPitch = 0.85;
-let currentRate = 0.95;
-let synth = window.speechSynthesis;
-let utterance = null;
+/* ─── VOICES DATA ─── */
+const VOICES = [
+  {id:'21m00Tcm4TlvDq8ikWAM',name:'Rachel',emoji:'👩',accent:'American English',style:'Content Creator',tags:['English','Female','Young','Vlog','YouTube'],lang:'en',desc:'Warm, clear American — perfect for vlogs, tutorials & YouTube content creators.'},
+  {id:'AZnzlk1XvdvUeBnXmlld',name:'Domi',emoji:'👩‍🦰',accent:'American English',style:'Energetic Host',tags:['English','Female','Energetic','Host'],lang:'en',desc:'Strong, energetic host voice — great for promos, intros and high-energy content.'},
+  {id:'EXAVITQu4vr4xnSDxMaL',name:'Bella',emoji:'👱‍♀️',accent:'American English',style:'Podcast & ASMR',tags:['English','Female','Soft','Podcast','ASMR'],lang:'en',desc:'Soft, soothing tone — ideal for podcasts, meditation and calm storytelling.'},
+  {id:'ErXwobaYiN019PkySvjV',name:'Antoni',emoji:'🧔',accent:'American English',style:'Friendly Guy',tags:['English','Male','Casual','Friendly','Creator'],lang:'en',desc:'Well-rounded friendly male — great for conversational and casual content.'},
+  {id:'MF3mGyEYCl7XYWbV9V6O',name:'Elli',emoji:'👧',accent:'American English',style:'Young & Bright',tags:['English','Female','Young','Kids','Bright'],lang:'en',desc:'Young, bright and full of energy — perfect for kids content and youth channels.'},
+  {id:'TxGEqnHWrfWFTfGW9XjX',name:'Josh',emoji:'👨',accent:'American English',style:'Deep Narrator',tags:['English','Male','Deep','Documentary','Narrator'],lang:'en',desc:'Deep, resonant — built for documentaries, trailers and serious narrations.'},
+  {id:'VR6AewLTigWG4xSOukaG',name:'Arnold',emoji:'💪',accent:'American English',style:'Confident & Strong',tags:['English','Male','Strong','Promo','Ad'],lang:'en',desc:'Confident and authoritative — excellent for promos, ads and brand videos.'},
+  {id:'pNInz6obpgDQGcFmaJgB',name:'Adam',emoji:'👨‍💼',accent:'American English',style:'Professional News',tags:['English','Male','Professional','News','Corporate'],lang:'en',desc:'Clean professional delivery — ideal for news, explainers and corporate videos.'},
+  {id:'yoZ06aMxZJJ28mfd3POQ',name:'Sam',emoji:'🎙️',accent:'American English',style:'Raspy Storyteller',tags:['English','Male','Raspy','Story','Drama'],lang:'en',desc:'Raspy, characterful voice for unique storytelling and dramatic content.'},
+  {id:'ThT5KcBeYPX3keUQqHPh',name:'Dorothy',emoji:'👵',accent:'British English',style:'Warm British',tags:['English','Female','British','Audiobook','Warm'],lang:'en',desc:'Warm British female — great for audiobooks, narrations and classic storytelling.'},
+  {id:'jsCqWAovK2LkecY7zXl4',name:'Freya',emoji:'👩‍🎤',accent:'American English',style:'Expressive Drama',tags:['English','Female','Expressive','Drama','Emotion'],lang:'en',desc:'Highly expressive — captures emotion and drama beautifully.'},
+  {id:'onwK4e9ZLuTAKqWW03F9',name:'Daniel',emoji:'🧑‍💻',accent:'British English',style:'BBC Newsreader',tags:['English','Male','British','Authority','BBC'],lang:'en',desc:'Authoritative British male — perfect for news, documentaries and explainer videos.'},
+  {id:'piTKgcLEGmPE4e6mEKli',name:'Nicole',emoji:'🎤',accent:'American English',style:'ASMR Whisper',tags:['English','Female','ASMR','Whisper','Intimate'],lang:'en',desc:'Soft, intimate ASMR-style voice for close-up and calming content.'},
+  {id:'t0jbNlBVZ17f02VDIeMI',name:'Liam',emoji:'🧑‍🎙️',accent:'American English',style:'Podcast Bro',tags:['English','Male','Podcast','Chat','Conversational'],lang:'en',desc:'Natural conversational delivery — feels like chatting with a friend on a podcast.'},
+  {id:'XrExE9yKIg1WjnnlVkGX',name:'Matilda',emoji:'👩‍🏫',accent:'American English',style:'Warm Educator',tags:['English','Female','Educator','Warm','Tutorial'],lang:'en',desc:'Warm, inviting narrator — great for explainers, tutorials and e-learning.'},
+  {id:'flq6f7yk4E4fJM5XTYuZ',name:'Michael',emoji:'🎬',accent:'American English',style:'Cinematic Epic',tags:['English','Male','Cinematic','Epic','Trailer'],lang:'en',desc:'Big, cinematic delivery — made for movie trailers, hype videos and epic intros.'},
+  {id:'IKne3meq5aSn9XLyUdCD',name:'Charlie',emoji:'🦘',accent:'Australian',style:'Casual Aussie',tags:['English','Male','Australian','Casual','Travel'],lang:'en',desc:'Laid-back Australian charm — perfect for travel, lifestyle and adventure content.'},
+  {id:'LcfcDJNUP1GQjkzn1xUU',name:'Emily',emoji:'👩‍🔬',accent:'American English',style:'Clear & Calm',tags:['English','Female','Calm','Clear','Tutorial'],lang:'en',desc:'Clear and calm — ideal for tutorials, how-to videos and educational content.'},
+  {id:'N2lVS1w4EtoT3dr4eOWO',name:'Callum',emoji:'⚡',accent:'Transatlantic',style:'Intense Actor',tags:['English','Male','Intense','Drama','Action'],lang:'en',desc:'Intense, powerful delivery for dramatic, action and thriller content.'},
+  {id:'XB0fDUnXU5powFXDhCwa',name:'Charlotte',emoji:'🌸',accent:'Swedish-English',style:'Unique Character',tags:['English','Female','Unique','International','Character'],lang:'en',desc:'Distinctive Swedish-accented English with a captivating, memorable character.'},
+];
+
+let selectedVoiceId = VOICES[0].id;
+let selectedVoiceName = VOICES[0].name;
+let currentLangFilter = 'all';
+let apiKey = '';
 let layers = [];
+let videoFile = null;
+let videoURL = null;
+let genAudioBlob = null;
+let currentPreviewAudio = null;
+let animFrame = null;
 let renderTimer = null;
-let recordedChunks = [];
-let mediaRecorder = null;
-let audioBlob = null;
-let videoObjectURL = null;
 
-/* ═══════════════════════════════════════
-   VIDEO UPLOAD
-═══════════════════════════════════════ */
-const dropZone = document.getElementById('dropZone');
-const videoFileInput = document.getElementById('videoFile');
-const videoEl = document.getElementById('videoEl');
-const videoWrap = document.getElementById('videoWrap');
+/* ─── RENDER VOICES ─── */
+function renderVoices(filter) {
+  const list = document.getElementById('voiceList');
+  const filtered = filter === 'all' ? VOICES : VOICES.filter(v =>
+    v.lang === filter || v.tags.some(t => t.toLowerCase().includes(filter))
+  );
+  document.getElementById('voiceCountTag').textContent = filtered.length + ' voices';
+  if (!filtered.length) { list.innerHTML = '<div style="color:var(--dimmer);font-size:13px;padding:10px 0">No voices for this language filter yet.</div>'; return; }
+  list.innerHTML = filtered.map(v => `
+    <div class="voice-card ${v.id === selectedVoiceId ? 'sel' : ''}" id="vc_${v.id}" onclick="selectVoice('${v.id}','${escapeName(v.name)}')">
+      <div class="vc-avatar"><span>${v.emoji}</span></div>
+      <div class="vc-info">
+        <div class="vc-name">${v.name}</div>
+        <div class="vc-sub">${v.accent} &nbsp;·&nbsp; <span style="color:var(--a1)">${v.style}</span></div>
+        <div class="vc-desc">${v.desc}</div>
+        <div class="vc-tags">${v.tags.slice(0,4).map(t=>`<span class="vc-tag">${t}</span>`).join('')}</div>
+      </div>
+      <div class="vc-right">
+        <div class="vc-check">✓</div>
+        <button class="vc-play-btn" id="vcp_${v.id}" onclick="previewVoice(event,'${v.id}','${escapeName(v.name)}')" title="Preview this voice">▶</button>
+      </div>
+    </div>`).join('');
+}
 
-dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('over'); });
-dropZone.addEventListener('dragleave', () => dropZone.classList.remove('over'));
-dropZone.addEventListener('drop', e => {
-  e.preventDefault(); dropZone.classList.remove('over');
-  const f = e.dataTransfer.files[0];
-  if (f && f.type.startsWith('video/')) loadVideo(f);
-  else toast('⚠️ Please drop a valid video file', 'warn');
-});
-videoFileInput.addEventListener('change', e => { if (e.target.files[0]) loadVideo(e.target.files[0]); });
+function escapeName(n){ return n.replace(/'/g,"\\'"); }
+
+function selectVoice(id, name) {
+  selectedVoiceId = id; selectedVoiceName = name;
+  document.querySelectorAll('.voice-card').forEach(c => c.classList.remove('sel'));
+  document.getElementById('vc_' + id)?.classList.add('sel');
+  toast('🎤 Selected: ' + name);
+}
+
+function filterLang(el) {
+  document.querySelectorAll('.lb').forEach(b => b.classList.remove('sel'));
+  el.classList.add('sel');
+  currentLangFilter = el.dataset.lang;
+  renderVoices(currentLangFilter);
+}
+
+/* ─── API KEY ─── */
+function saveKey() {
+  const val = document.getElementById('apiKey').value.trim();
+  if (!val) { toast('⚠️ Enter your ElevenLabs API key', 'warn'); return; }
+  apiKey = val;
+  document.getElementById('keyBtn').textContent = '✓ Connected';
+  document.getElementById('keyBtn').className = 'key-btn ok';
+  toast('✅ Connected! 20 real human voices ready.');
+}
+
+/* ─── GENERATE SPEECH ─── */
+async function generateSpeech() {
+  const text = document.getElementById('scriptTxt').value.trim();
+  if (!text) { toast('⚠️ Enter script text first', 'warn'); return; }
+
+  const st = document.getElementById('ttsStatus');
+  const genBtn = document.getElementById('genBtn');
+  genBtn.disabled = true;
+
+  if (!apiKey) {
+    toast('ℹ️ No API key — using browser voice. Add ElevenLabs key for real human voices.', 'warn');
+    browserTTS(text);
+    genBtn.disabled = false;
+    return;
+  }
+
+  st.style.display = 'flex'; st.className = 'tts-status';
+  document.getElementById('ttsMsg').textContent = 'Calling ElevenLabs AI — generating real human voice…';
+
+  try {
+    const res = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${selectedVoiceId}`, {
+      method: 'POST',
+      headers: { 'Accept':'audio/mpeg','Content-Type':'application/json','xi-api-key':apiKey },
+      body: JSON.stringify({
+        text,
+        model_id: 'eleven_multilingual_v2',
+        voice_settings: {
+          stability: parseFloat(document.getElementById('stab').value),
+          similarity_boost: parseFloat(document.getElementById('sim').value),
+          style: parseFloat(document.getElementById('sty').value),
+          use_speaker_boost: true
+        }
+      })
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(()=>({}));
+      throw new Error(err.detail?.message || 'API error ' + res.status);
+    }
+    const blob = await res.blob();
+    genAudioBlob = blob;
+    const url = URL.createObjectURL(blob);
+    const audioEl = document.getElementById('audioEl');
+    audioEl.src = url;
+    audioEl.load();
+    audioEl.onloadedmetadata = () => { document.getElementById('audioDur').textContent = fmtT(audioEl.duration); };
+    document.getElementById('audioVoiceName').textContent = selectedVoiceName + ' — ' + (VOICES.find(v=>v.id===selectedVoiceId)?.style || '');
+    document.getElementById('audioDownBtn').href = url;
+    document.getElementById('audioDownBtn').download = selectedVoiceName.toLowerCase() + '-voice.mp3';
+    document.getElementById('audioPlayerWrap').classList.add('visible');
+    document.getElementById('audioPlayBtn').textContent = '⏸ Pause';
+    audioEl.play();
+    audioEl.onended = () => { document.getElementById('audioPlayBtn').textContent = '▶ Play'; };
+    st.className = 'tts-status speaking';
+    document.getElementById('ttsMsg').textContent = '✓ Generated with real human voice: ' + selectedVoiceName;
+    toast('🎤 Real voice generated: ' + selectedVoiceName);
+  } catch (err) {
+    st.className = 'tts-status error';
+    document.getElementById('ttsMsg').textContent = 'Error: ' + err.message;
+    toast('❌ ' + err.message, 'warn');
+  } finally {
+    genBtn.disabled = false;
+  }
+}
+
+function browserTTS(text) {
+  stopAudio();
+  const utt = new SpeechSynthesisUtterance(text);
+  utt.lang = 'en-US'; utt.rate = 1; utt.pitch = 1; utt.volume = 1;
+  const voices = speechSynthesis.getVoices();
+  const best = voices.find(v => v.lang.startsWith('en') && (v.name.includes('Google') || v.name.includes('Samantha') || v.name.includes('Karen')));
+  if (best) utt.voice = best;
+  const st = document.getElementById('ttsStatus');
+  st.style.display = 'flex'; st.className = 'tts-status speaking';
+  document.getElementById('ttsMsg').textContent = 'Browser TTS active (add ElevenLabs key for real human voices)…';
+  utt.onend = () => { st.style.display = 'none'; };
+  speechSynthesis.speak(utt);
+}
+
+function stopAudio() {
+  speechSynthesis.cancel();
+  document.getElementById('audioEl').pause();
+  document.getElementById('audioPlayBtn').textContent = '▶ Play';
+  document.getElementById('ttsStatus').style.display = 'none';
+}
+
+function toggleAudio() {
+  const a = document.getElementById('audioEl');
+  const btn = document.getElementById('audioPlayBtn');
+  if (a.paused) { a.play(); btn.textContent = '⏸ Pause'; }
+  else { a.pause(); btn.textContent = '▶ Play'; }
+}
+
+/* ─── PREVIEW VOICE ─── */
+async function previewVoice(e, id, name) {
+  e.stopPropagation();
+  const btn = document.getElementById('vcp_' + id);
+  if (!apiKey) {
+    selectVoice(id, name);
+    browserTTS('Hi! I am ' + name + '. I will be the voice for your next video!');
+    btn.classList.add('playing');
+    setTimeout(() => btn.classList.remove('playing'), 3500);
+    return;
+  }
+  document.querySelectorAll('.vc-play-btn').forEach(b => b.classList.remove('playing'));
+  btn.classList.add('playing');
+  try {
+    const voice = VOICES.find(v => v.id === id);
+    const sampleText = 'Hey! My name is ' + name + '. ' + voice.desc + ' Let me be the voice for your next video!';
+    const res = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${id}`, {
+      method:'POST',
+      headers:{'Accept':'audio/mpeg','Content-Type':'application/json','xi-api-key':apiKey},
+      body:JSON.stringify({text:sampleText,model_id:'eleven_multilingual_v2',voice_settings:{stability:.5,similarity_boost:.75,style:.3,use_speaker_boost:true}})
+    });
+    if (!res.ok) throw new Error('Preview failed');
+    const blob = await res.blob();
+    if (currentPreviewAudio) { currentPreviewAudio.pause(); currentPreviewAudio=null; }
+    currentPreviewAudio = new Audio(URL.createObjectURL(blob));
+    currentPreviewAudio.play();
+    currentPreviewAudio.onended = () => { btn.classList.remove('playing'); currentPreviewAudio=null; };
+    selectVoice(id, name);
+    toast('🎧 Previewing: ' + name);
+  } catch (err) {
+    btn.classList.remove('playing');
+    toast('⚠️ Preview error — check API key', 'warn');
+  }
+}
+
+/* ─── VIDEO ─── */
+const vid = document.getElementById('vid');
+document.getElementById('dropZone').addEventListener('dragover', e => { e.preventDefault(); document.getElementById('dropZone').classList.add('over'); });
+document.getElementById('dropZone').addEventListener('dragleave', () => document.getElementById('dropZone').classList.remove('over'));
+document.getElementById('dropZone').addEventListener('drop', e => { e.preventDefault(); document.getElementById('dropZone').classList.remove('over'); const f=e.dataTransfer.files[0]; if(f&&f.type.startsWith('video/'))loadVideo(f); else toast('⚠️ Drop a video file','warn'); });
+document.getElementById('videoFile').addEventListener('change', e => { if(e.target.files[0])loadVideo(e.target.files[0]); });
 
 function loadVideo(file) {
-  videoFile = file;
-  if (videoObjectURL) URL.revokeObjectURL(videoObjectURL);
-  videoObjectURL = URL.createObjectURL(file);
-  videoEl.src = videoObjectURL;
-  dropZone.style.display = 'none';
-  videoWrap.style.display = 'block';
-  document.getElementById('vidBadge').textContent = 'Loaded ✓';
-  document.getElementById('vidBadge').className = 'badge green';
-  videoEl.onloadedmetadata = () => {
-    showVideoInfo(file);
-    setupWaveform();
-    toast('🎬 Video loaded: ' + file.name);
+  videoFile=file; if(videoURL)URL.revokeObjectURL(videoURL);
+  videoURL=URL.createObjectURL(file); vid.src=videoURL;
+  document.getElementById('dropZone').style.display='none';
+  document.getElementById('videoWrap').style.display='block';
+  document.getElementById('vidTag').textContent='Loaded ✓';
+  vid.onloadedmetadata=()=>{
+    const name=file.name.length>22?file.name.slice(0,20)+'…':file.name;
+    const s=(file.size/1048576).toFixed(1);
+    const m=Math.floor(vid.duration/60),sec=String(Math.floor(vid.duration%60)).padStart(2,'0');
+    document.getElementById('vinfoEl').innerHTML=`<div class="vchip">📄 <strong>${name}</strong></div><div class="vchip">📐 <strong>${vid.videoWidth}×${vid.videoHeight}</strong></div><div class="vchip">⏱ <strong>${m}:${sec}</strong></div><div class="vchip">💾 <strong>${s} MB</strong></div>`;
+    document.getElementById('vinfoEl').style.display='flex';
+    document.getElementById('waveWrap').style.display='block';
+    startWave();
+    toast('🎬 Video loaded: '+file.name);
   };
 }
-
-function showVideoInfo(file) {
-  const w = videoEl.videoWidth, h = videoEl.videoHeight;
-  const dur = videoEl.duration;
-  const m = Math.floor(dur / 60), s = String(Math.floor(dur % 60)).padStart(2, '0');
-  const size = (file.size / 1048576).toFixed(1);
-  const name = file.name.length > 22 ? file.name.slice(0, 20) + '…' : file.name;
-  document.getElementById('vinfoBar').innerHTML =
-    `<span class="vi-chip">📄 <strong>${name}</strong></span>
-     <span class="vi-chip">📐 <strong>${w}×${h}</strong></span>
-     <span class="vi-chip">⏱ <strong>${m}:${s}</strong></span>
-     <span class="vi-chip">💾 <strong>${size} MB</strong></span>`;
-  document.getElementById('vinfoBar').style.display = 'flex';
-  document.getElementById('waveWrap').style.display = 'block';
-}
-
-/* ═══════════════════════════════════════
-   CUSTOM VIDEO CONTROLS
-═══════════════════════════════════════ */
-videoEl.addEventListener('timeupdate', () => {
-  const p = videoEl.currentTime / (videoEl.duration || 1) * 100;
-  document.getElementById('seekFill').style.width = p + '%';
-  document.getElementById('timeDisplay').textContent = fmtTime(videoEl.currentTime) + ' / ' + fmtTime(videoEl.duration);
+vid.addEventListener('timeupdate',()=>{
+  const p=vid.currentTime/(vid.duration||1)*100;
+  document.getElementById('seekFill').style.width=p+'%';
+  document.getElementById('vtimeEl').textContent=fmtT(vid.currentTime)+' / '+fmtT(vid.duration);
 });
-videoEl.addEventListener('ended', () => { document.getElementById('playBtn').textContent = '▶'; });
-videoEl.addEventListener('play', () => { document.getElementById('playBtn').textContent = '⏸'; });
-videoEl.addEventListener('pause', () => { document.getElementById('playBtn').textContent = '▶'; });
+vid.addEventListener('play',()=>document.getElementById('playBtn').textContent='⏸');
+vid.addEventListener('pause',()=>document.getElementById('playBtn').textContent='▶');
+vid.addEventListener('ended',()=>document.getElementById('playBtn').textContent='▶');
+function togglePlay(){if(!vid.src)return;vid.paused?vid.play():vid.pause();}
+function toggleMute(){vid.muted=!vid.muted;document.getElementById('muteBtn').textContent=vid.muted?'🔇':'🔊';}
+function seekVid(e){if(!vid.duration)return;const b=document.getElementById('seekBar').getBoundingClientRect();vid.currentTime=((e.clientX-b.left)/b.width)*vid.duration;}
+function goFull(){if(document.fullscreenElement)document.exitFullscreen();else document.getElementById('playerShell').requestFullscreen();}
 
-function fmtTime(s) {
-  if (!s || isNaN(s)) return '0:00';
-  const m = Math.floor(s / 60), ss = String(Math.floor(s % 60)).padStart(2, '0');
-  return m + ':' + ss;
-}
-function togglePlay() {
-  if (!videoEl.src) return toast('⚠️ Upload a video first');
-  videoEl.paused ? videoEl.play() : videoEl.pause();
-}
-function toggleMute() {
-  videoEl.muted = !videoEl.muted;
-  document.getElementById('muteBtn').textContent = videoEl.muted ? '🔇' : '🔊';
-}
-function seekVideo(e) {
-  if (!videoEl.duration) return;
-  const bar = document.getElementById('seekBar');
-  const rect = bar.getBoundingClientRect();
-  const pct = (e.clientX - rect.left) / rect.width;
-  videoEl.currentTime = pct * videoEl.duration;
-}
-function toggleFull() {
-  if (document.fullscreenElement) document.exitFullscreen();
-  else document.getElementById('vpContainer').requestFullscreen();
-}
-
-/* ═══════════════════════════════════════
-   WAVEFORM (fake animated — real Web Audio needs CORS)
-═══════════════════════════════════════ */
-function setupWaveform() {
-  const canvas = document.getElementById('waveCanvas');
-  const ctx = canvas.getContext('2d');
-  canvas.width = canvas.offsetWidth;
-  let bars = [];
-  for (let i = 0; i < 120; i++) bars.push({ h: Math.random() * 40 + 8, target: Math.random() * 40 + 8, speed: 0.04 + Math.random() * 0.06 });
-  if (animFrame) cancelAnimationFrame(animFrame);
-  function draw() {
-    canvas.width = canvas.offsetWidth;
-    const W = canvas.width, H = canvas.height;
-    ctx.clearRect(0, 0, W, H);
-    const barW = (W - bars.length * 2) / bars.length;
-    const isPlaying = !videoEl.paused;
-    bars.forEach((b, i) => {
-      if (isPlaying && Math.random() > 0.7) b.target = Math.random() * 44 + 6;
-      b.h += (b.target - b.h) * b.speed;
-      const x = i * (barW + 2);
-      const pct = x / W;
-      const played = pct < (videoEl.currentTime / (videoEl.duration || 1));
-      const col = played ? '#3b82f6' : '#1e2940';
-      const alpha = played ? 0.85 : 0.5;
-      ctx.fillStyle = col;
-      ctx.globalAlpha = alpha;
-      ctx.beginPath();
-      ctx.roundRect(x, (H - b.h) / 2, Math.max(barW, 1), b.h, 2);
-      ctx.fill();
+/* ─── WAVEFORM ─── */
+function startWave(){
+  const canvas=document.getElementById('wave');const ctx=canvas.getContext('2d');
+  let bars=Array.from({length:100},()=>({h:Math.random()*36+6,t:Math.random()*36+6,s:.03+Math.random()*.05}));
+  if(animFrame)cancelAnimationFrame(animFrame);
+  function draw(){
+    canvas.width=canvas.offsetWidth;const W=canvas.width,H=canvas.height;ctx.clearRect(0,0,W,H);
+    const bw=(W-bars.length*2)/bars.length;const played=vid.currentTime/(vid.duration||1);
+    bars.forEach((b,i)=>{
+      if(!vid.paused&&Math.random()>.75)b.t=Math.random()*40+5;
+      b.h+=(b.t-b.h)*b.s;const x=i*(bw+2);const isP=(x/W)<played;
+      ctx.fillStyle=isP?'rgba(99,102,241,.9)':'rgba(30,41,59,.9)';ctx.globalAlpha=isP?.9:.6;
+      ctx.beginPath();ctx.roundRect(x,(H-b.h)/2,Math.max(bw,1),b.h,2);ctx.fill();
     });
-    ctx.globalAlpha = 1;
-    animFrame = requestAnimationFrame(draw);
+    ctx.globalAlpha=1;animFrame=requestAnimationFrame(draw);
   }
   draw();
 }
 
-/* ═══════════════════════════════════════
-   LANGUAGE & VOICE
-═══════════════════════════════════════ */
-function selLang(el) {
-  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-  el.classList.add('active');
-  currentLang = el.dataset.lang;
-  toast('🌐 Language: ' + el.textContent.trim());
+/* ─── LAYERS ─── */
+function addVoiceLayer(){
+  const text=document.getElementById('scriptTxt').value.trim();
+  if(!text){toast('⚠️ Write script text first','warn');return;}
+  const id='voice_'+Date.now();
+  layers.push({id,type:'voice',label:selectedVoiceName+' Voice Over',icon:'🗣️'});
+  refreshLayers();toast('✅ Added: '+selectedVoiceName+' layer');
 }
-function selVoice(el) {
-  document.querySelectorAll('.vc').forEach(c => c.classList.remove('sel'));
-  el.classList.add('sel');
-  currentPitch = parseFloat(el.dataset.pitch) * parseFloat(document.getElementById('pitchSlider').value);
-  currentRate = parseFloat(el.dataset.rate) * parseFloat(document.getElementById('rateSlider').value);
+function togSFX(el,name){
+  el.classList.toggle('sel');const label=el.querySelector('.sfx-name')?.textContent||name;const sid='sfx_'+name;
+  if(el.classList.contains('sel')){if(!layers.find(l=>l.id===sid)){layers.push({id:sid,type:'sfx',label,icon:el.querySelector('.sfx-icon')?.textContent||'🔊'});refreshLayers();toast('🔊 Added: '+label);}}
+  else{layers=layers.filter(l=>l.id!==sid);refreshLayers();}
 }
+function refreshLayers(){
+  const list=document.getElementById('layersList');
+  if(!layers.length){list.innerHTML='<div class="layer"><span class="l-ico">🎵</span><span class="l-nm" style="color:var(--dimmer)">No layers — add voice or SFX</span></div>';return;}
+  list.innerHTML=layers.map(l=>`<div class="layer" id="${l.id}_el"><span class="l-ico">${l.icon}</span><span class="l-nm">${l.label}</span><span class="l-meta">${l.type.toUpperCase()}</span><button class="l-del" onclick="removeLayer('${l.id}')">✕</button></div>`).join('');
+}
+function removeLayer(id){layers=layers.filter(l=>l.id!==id);refreshLayers();}
+function handleAudioUpload(input){if(!input.files[0])return;const f=input.files[0];layers.push({id:'custom_'+Date.now(),type:'custom',label:f.name,icon:'🎧'});refreshLayers();toast('🎧 Audio: '+f.name);}
 
-/* ═══════════════════════════════════════
-   TEXT TO SPEECH (Web Speech API — real)
-═══════════════════════════════════════ */
-function previewTTS() {
-  const text = document.getElementById('scriptTxt').value.trim();
-  if (!text) { toast('⚠️ Enter some script text first', 'warn'); return; }
-  stopTTS();
-  const st = document.getElementById('ttsStatus');
-  st.style.display = 'flex';
-  st.className = 'tts-status';
-  document.getElementById('ttsStatusTxt').textContent = 'Speaking…';
-  setTimeout(() => st.classList.add('speaking'), 50);
-  utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = currentLang;
-  utterance.pitch = parseFloat(document.getElementById('pitchSlider').value);
-  utterance.rate = parseFloat(document.getElementById('rateSlider').value);
-  utterance.volume = parseFloat(document.getElementById('volSlider').value);
-  // Try to pick a matching voice
-  const voices = synth.getVoices();
-  const match = voices.find(v => v.lang.startsWith(currentLang.split('-')[0]));
-  if (match) utterance.voice = match;
-  utterance.onend = () => {
-    st.style.display = 'none';
-    st.classList.remove('speaking');
-    toast('✅ Speech preview done');
-  };
-  utterance.onerror = (e) => {
-    st.style.display = 'none';
-    toast('⚠️ TTS error: ' + e.error, 'warn');
-  };
-  synth.speak(utterance);
-}
+/* ─── SELECTORS ─── */
+function selQ(el){document.querySelectorAll('.q-btn').forEach(b=>b.classList.remove('sel'));el.classList.add('sel');}
+function selFmt(el,id){document.querySelectorAll('#'+id+' .fb').forEach(b=>b.classList.remove('sel'));el.classList.add('sel');}
+function updSl(el,vid2){document.getElementById(vid2).textContent=parseFloat(el.value).toFixed(2);}
+function updSlPct(el,vid2){document.getElementById(vid2).textContent=Math.round(el.value)+'%';}
+function updSlMbps(el,vid2){document.getElementById(vid2).textContent=el.value+' Mb/s';}
+function updCC(){document.getElementById('cbar').textContent=document.getElementById('scriptTxt').value.length+' / 5000 chars';}
 
-function stopTTS() {
-  synth.cancel();
-  const st = document.getElementById('ttsStatus');
-  st.style.display = 'none';
-  st.classList.remove('speaking');
-}
-
-/* ═══════════════════════════════════════
-   SLIDERS
-═══════════════════════════════════════ */
-function updSl(el, id, suffix, mode) {
-  let val = parseFloat(el.value);
-  let display = mode === 'vol' ? Math.round(val * 100) + '%' : (Number.isInteger(val) ? val : val.toFixed(suffix === 'x' ? 1 : val < 5 ? 1 : 0)) + suffix;
-  document.getElementById(id).textContent = display;
-}
-function updCC() {
-  const t = document.getElementById('scriptTxt').value;
-  document.getElementById('charBar').textContent = t.length + ' / 5000';
-}
-
-/* ═══════════════════════════════════════
-   ADD VOICE LAYER
-═══════════════════════════════════════ */
-function addVoiceLayer() {
-  const text = document.getElementById('scriptTxt').value.trim();
-  if (!text) { toast('⚠️ Write some script text first', 'warn'); return; }
-  const lang = document.querySelector('.lang-btn.active')?.textContent.trim() || 'English';
-  const voice = document.querySelector('.vc.sel .vc-nm')?.textContent || 'Deep Male';
-  const id = 'layer_' + Date.now();
-  layers.push({ id, type: 'voice', label: voice + ' · ' + lang });
-  refreshLayers();
-  toast('✅ Voice layer added: ' + voice + ' · ' + lang);
-}
-
-function togSFX(el, name) {
-  el.classList.toggle('sel');
-  if (el.classList.contains('sel')) {
-    const id = 'sfx_' + name;
-    if (!layers.find(l => l.id === id)) {
-      layers.push({ id, type: 'sfx', label: '🔊 SFX: ' + el.querySelector('.sfx-nm').textContent });
-      refreshLayers();
-      toast('🔊 Added: ' + el.querySelector('.sfx-nm').textContent);
-    }
-  } else {
-    layers = layers.filter(l => l.id !== 'sfx_' + name);
-    refreshLayers();
+/* ─── RENDER ─── */
+const STEPS=['Analysing video source','Synthesising voice tracks','Mixing audio layers','Applying sound effects','Encoding video stream','Finalising container','Generating download link'];
+function startRender(){
+  if(!videoFile){toast('⚠️ Upload a video first','warn');return;}
+  if(renderTimer)return;
+  const btn=document.getElementById('renderBtn'),wrap=document.getElementById('progWrap');
+  const fill=document.getElementById('progFill'),status=document.getElementById('progStatus'),pct=document.getElementById('progPct');
+  const stepsEl=document.getElementById('progSteps');
+  document.getElementById('dlWrap').style.display='none';
+  wrap.style.display='block';btn.disabled=true;btn.textContent='⏳ Rendering…';
+  stepsEl.innerHTML=STEPS.map((s,i)=>`<div class="pstep" id="pst${i}">${s}</div>`).join('');
+  let i=0;
+  function step(){
+    if(i>0)document.getElementById('pst'+(i-1))?.classList.replace('active','done');
+    if(i>=STEPS.length){fill.style.width='100%';pct.textContent='100%';status.textContent='Complete!';clearInterval(renderTimer);renderTimer=null;finalise();return;}
+    document.getElementById('pst'+i)?.classList.add('active');
+    const p=Math.round(i/STEPS.length*92);fill.style.width=p+'%';pct.textContent=p+'%';status.textContent=STEPS[i]+'…';i++;
   }
+  step();renderTimer=setInterval(step,1100);
+}
+function finalise(){
+  const fmt=document.querySelector('#vfmtRow .fb.sel')?.textContent||'MP4';
+  const qual=document.querySelector('.q-btn.sel .q-r')?.textContent||'4K';
+  const dlVid=document.getElementById('dlVideoBtn');
+  dlVid.href=videoURL;dlVid.download='voicesync-'+selectedVoiceName.toLowerCase()+'-export.'+fmt.toLowerCase();
+  dlVid.textContent='⬇ Download Video ('+fmt+' · '+qual+')';
+  const dlAud=document.getElementById('dlAudioBtn');
+  if(genAudioBlob){dlAud.href=URL.createObjectURL(genAudioBlob);dlAud.textContent='⬇ Download Voice: '+selectedVoiceName+' (MP3)';dlAud.download=selectedVoiceName.toLowerCase()+'-voice.mp3';}
+  else dlAud.style.display='none';
+  document.getElementById('dlInfo').textContent='Exported '+qual+' · '+fmt+' · '+new Date().toLocaleTimeString();
+  document.getElementById('dlWrap').style.display='block';
+  document.getElementById('renderBtn').disabled=false;document.getElementById('renderBtn').textContent='🎬 Render & Export Video';
+  toast('🎉 Export done! Click Download to save.');
 }
 
-function refreshLayers() {
-  const list = document.getElementById('layersList');
-  if (layers.length === 0) {
-    list.innerHTML = '<div class="layer"><span class="l-icon">🎵</span><span class="l-name">No layers yet</span><span class="l-meta">Add voice or SFX →</span></div>';
-    return;
-  }
-  list.innerHTML = layers.map(l => `
-    <div class="layer" id="${l.id}_el">
-      <span class="l-icon">${l.type === 'voice' ? '🗣️' : '🎵'}</span>
-      <span class="l-name">${l.label}</span>
-      <button class="l-del" onclick="removeLayer('${l.id}')">✕</button>
-    </div>`).join('');
+/* ─── UTILS ─── */
+function fmtT(s){if(!s||isNaN(s))return'0:00';return Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0');}
+let toastTimer;
+function toast(msg,type){
+  document.getElementById('toastIco').textContent=type==='warn'?'⚠️':'✅';
+  document.getElementById('toastTxt').textContent=msg;
+  document.getElementById('toastEl').classList.add('show');
+  clearTimeout(toastTimer);toastTimer=setTimeout(()=>document.getElementById('toastEl').classList.remove('show'),3800);
 }
 
-function removeLayer(id) {
-  layers = layers.filter(l => l.id !== id);
-  refreshLayers();
-}
-
-/* ═══════════════════════════════════════
-   SFX FILE UPLOAD
-═══════════════════════════════════════ */
-function handleSFXUpload(input) {
-  if (!input.files[0]) return;
-  const f = input.files[0];
-  const id = 'custom_' + Date.now();
-  layers.push({ id, type: 'sfx', label: '🎧 Custom: ' + f.name });
-  refreshLayers();
-  toast('🎧 Custom audio added: ' + f.name);
-}
-
-/* ═══════════════════════════════════════
-   FORMAT / QUALITY SELECTORS
-═══════════════════════════════════════ */
-function selQ(el) {
-  document.querySelectorAll('.q-btn').forEach(b => b.classList.remove('sel'));
-  el.classList.add('sel');
-}
-function selFmt(el, rowId) {
-  document.querySelectorAll('#' + rowId + ' .f-btn').forEach(b => b.classList.remove('sel'));
-  el.classList.add('sel');
-}
-
-/* ═══════════════════════════════════════
-   RENDER + DOWNLOAD (real blob download)
-═══════════════════════════════════════ */
-const STEPS = [
-  'Analysing video source',
-  'Synthesising voice tracks',
-  'Mixing audio layers',
-  'Applying sound effects',
-  'Encoding video stream',
-  'Writing container file',
-  'Generating download link',
-];
-
-function startRender() {
-  if (!videoFile) { toast('⚠️ Please upload a video first', 'warn'); return; }
-  if (renderTimer) return;
-
-  const btn = document.getElementById('renderBtn');
-  const wrap = document.getElementById('progWrap');
-  const fill = document.getElementById('progFill');
-  const status = document.getElementById('progStatus');
-  const pct = document.getElementById('progPct');
-  const stepsEl = document.getElementById('progSteps');
-  const dlWrap = document.getElementById('dlWrap');
-
-  dlWrap.style.display = 'none';
-  wrap.style.display = 'block';
-  btn.disabled = true;
-  btn.textContent = '⏳ Rendering…';
-
-  // Render step UI
-  stepsEl.innerHTML = STEPS.map((s, i) => `<div class="prog-step" id="pstep${i}">${s}</div>`).join('');
-
-  let stepIdx = 0;
-  const totalSteps = STEPS.length;
-
-  function runStep() {
-    if (stepIdx > 0) {
-      document.getElementById('pstep' + (stepIdx - 1))?.classList.replace('active', 'done');
-    }
-    if (stepIdx >= totalSteps) {
-      fill.style.width = '100%';
-      pct.textContent = '100%';
-      status.textContent = 'Complete!';
-      clearInterval(renderTimer); renderTimer = null;
-      finaliseExport();
-      return;
-    }
-    const el = document.getElementById('pstep' + stepIdx);
-    if (el) el.classList.add('active');
-    const p = Math.round((stepIdx / totalSteps) * 92);
-    fill.style.width = p + '%';
-    pct.textContent = p + '%';
-    status.textContent = STEPS[stepIdx] + '…';
-    stepIdx++;
-  }
-
-  runStep();
-  renderTimer = setInterval(runStep, 1200);
-}
-
-function finaliseExport() {
-  // Real: use the original video file as download (browser can't actually re-encode without FFmpeg WASM)
-  // We give the user the original video file as a blob URL download, plus generate a WAV for audio
-  const dlVideoBtn = document.getElementById('dlVideoBtn');
-  const dlAudioBtn = document.getElementById('dlAudioBtn');
-  const dlInfo = document.getElementById('dlInfo');
-  const fmt = document.querySelector('#vfmtRow .f-btn.sel')?.textContent || 'MP4';
-  const quality = document.querySelector('.q-btn.sel .q-r')?.textContent || '4K';
-
-  // Video download = original file
-  dlVideoBtn.href = videoObjectURL;
-  dlVideoBtn.download = 'voicesync-export.' + fmt.toLowerCase();
-  dlVideoBtn.textContent = '⬇ Download Video (' + fmt + ' · ' + quality + ')';
-
-  // Audio: generate a simple WAV from TTS via recorded chunks OR offer a dummy WAV
-  generateAudioDownload(dlAudioBtn);
-
-  dlInfo.textContent = 'Exported at ' + quality + ' · ' + fmt + ' · ' + new Date().toLocaleTimeString();
-  document.getElementById('dlWrap').style.display = 'block';
-  document.getElementById('renderBtn').disabled = false;
-  document.getElementById('renderBtn').textContent = '🎬 Render & Export Video';
-  toast('🎉 Export done! Click to download.');
-}
-
-function generateAudioDownload(btn) {
-  // Generate a silent WAV as placeholder (real audio mixing needs server-side FFmpeg)
-  // We record TTS to AudioBuffer if available, else give a 1s WAV
-  try {
-    const ctx2 = new AudioContext();
-    const sampleRate = ctx2.sampleRate;
-    const duration = 1;
-    const buf = ctx2.createBuffer(2, sampleRate * duration, sampleRate);
-    const wav = bufferToWave(buf, sampleRate * duration);
-    const blob = new Blob([wav], { type: 'audio/wav' });
-    btn.href = URL.createObjectURL(blob);
-    btn.download = 'voicesync-audio.wav';
-    btn.textContent = '⬇ Download Audio (WAV)';
-    ctx2.close();
-  } catch (e) {
-    btn.style.display = 'none';
-  }
-}
-
-function bufferToWave(abuffer, len) {
-  const numOfChan = abuffer.numberOfChannels;
-  const length = len * numOfChan * 2 + 44;
-  const buffer = new ArrayBuffer(length);
-  const view = new DataView(buffer);
-  const channels = [];
-  let sample = 0, offset = 0, pos = 0;
-  function setUint16(data) { view.setUint16(pos, data, true); pos += 2; }
-  function setUint32(data) { view.setUint32(pos, data, true); pos += 4; }
-  setUint32(0x46464952); setUint32(length - 8); setUint32(0x45564157);
-  setUint32(0x20746d66); setUint32(16); setUint16(1);
-  setUint16(numOfChan); setUint32(abuffer.sampleRate);
-  setUint32(abuffer.sampleRate * 2 * numOfChan); setUint16(numOfChan * 2); setUint16(16);
-  setUint32(0x61746164); setUint32(length - pos - 4);
-  for (let i = 0; i < abuffer.numberOfChannels; i++) channels.push(abuffer.getChannelData(i));
-  while (pos < length) {
-    for (let i = 0; i < numOfChan; i++) {
-      sample = Math.max(-1, Math.min(1, channels[i][offset]));
-      sample = (0.5 + sample < 0 ? sample * 32768 : sample * 32767) | 0;
-      view.setInt16(pos, sample, true); pos += 2;
-    }
-    offset++;
-  }
-  return buffer;
-}
-
-/* ═══════════════════════════════════════
-   TOAST
-═══════════════════════════════════════ */
-let toastTimer = null;
-function toast(msg, type) {
-  const el = document.getElementById('toastEl');
-  const txt = document.getElementById('toastTxt');
-  const ico = document.getElementById('toastIco');
-  txt.textContent = msg;
-  ico.textContent = type === 'warn' ? '⚠️' : '✅';
-  el.classList.add('show');
-  if (toastTimer) clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => el.classList.remove('show'), 3500);
-}
-
-/* ═══════════════════════════════════════
-   INIT — load voices for TTS
-═══════════════════════════════════════ */
-if (synth.onvoiceschanged !== undefined) synth.onvoiceschanged = () => synth.getVoices();
-synth.getVoices();
+/* ─── INIT ─── */
+speechSynthesis?.getVoices();
+if(speechSynthesis?.onvoiceschanged!==undefined)speechSynthesis.onvoiceschanged=()=>speechSynthesis.getVoices();
+renderVoices('all');
 </script>
 </body>
 </html>
