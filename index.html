@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VoiceSync Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0b0f;
+    --surface: #111318;
+    --surface2: #181c24;
+    --surface3: #1e2330;
+    --accent: #00e5a0;
+    --accent2: #7b5ea7;
+    --accent3: #ff6b35;
+    --text: #e8eaf0;
+    --text-dim: #8890a4;
+    --text-dimmer: #4a5168;
+    --border: #252a38;
+    --border-accent: rgba(0,229,160,0.3);
+    --glow: 0 0 30px rgba(0,229,160,0.15);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    font-family: 'Syne', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Background grid */
+  body::before {
+    content:'';
+    position:fixed; inset:0;
+    background-image:
+      linear-gradient(rgba(0,229,160,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,229,160,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events:none; z-index:0;
+  }
+
+  .wrap { position:relative; z-index:1; max-width:1200px; margin:0 auto; padding:0 24px 60px; }
+
+  /* Header */
+  header {
+    padding: 28px 0 32px;
+    display:flex; align-items:center; justify-content:space-between;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 36px;
+  }
+  .logo {
+    display:flex; align-items:center; gap:12px;
+  }
+  .logo-icon {
+    width:40px; height:40px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius:10px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:18px;
+  }
+  .logo-text { font-size:22px; font-weight:800; letter-spacing:-0.5px; }
+  .logo-text span { color: var(--accent); }
+  .badge {
+    font-family:'DM Mono', monospace;
+    font-size:11px; color: var(--accent);
+    background: rgba(0,229,160,0.08);
+    border: 1px solid var(--border-accent);
+    padding: 4px 10px; border-radius: 20px;
+    letter-spacing:1px;
+  }
+
+  /* Main grid */
+  .main-grid {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 24px;
+  }
+
+  /* Panel base */
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  .panel-head {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display:flex; align-items:center; gap:10px;
+    background: var(--surface2);
+  }
+  .panel-head .icon { font-size:16px; }
+  .panel-head h2 { font-size:14px; font-weight:700; letter-spacing:0.5px; color:var(--text); }
+  .panel-head .count {
+    margin-left:auto;
+    font-family:'DM Mono',monospace; font-size:11px;
+    color:var(--accent); background:rgba(0,229,160,0.1);
+    padding:2px 8px; border-radius:10px;
+  }
+  .panel-body { padding:20px; }
+
+  /* Upload Zone */
+  .upload-zone {
+    border: 2px dashed var(--border);
+    border-radius: 14px;
+    padding: 48px 24px;
+    text-align:center;
+    cursor:pointer;
+    transition: all 0.25s ease;
+    position:relative;
+    background: var(--surface2);
+  }
+  .upload-zone:hover, .upload-zone.dragover {
+    border-color: var(--accent);
+    background: rgba(0,229,160,0.04);
+    box-shadow: var(--glow);
+  }
+  .upload-zone input { position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; height:100%; }
+  .upload-icon {
+    width:60px; height:60px; margin:0 auto 16px;
+    background: linear-gradient(135deg, rgba(0,229,160,0.15), rgba(123,94,167,0.15));
+    border-radius:14px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:26px;
+    border: 1px solid var(--border);
+  }
+  .upload-zone h3 { font-size:16px; font-weight:700; margin-bottom:8px; }
+  .upload-zone p { font-size:13px; color:var(--text-dim); font-family:'DM Mono',monospace; }
+  .upload-zone .formats {
+    margin-top:14px; display:flex; gap:8px; justify-content:center; flex-wrap:wrap;
+  }
+  .fmt-tag {
+    font-family:'DM Mono',monospace; font-size:10px;
+    border: 1px solid var(--border); color:var(--text-dimmer);
+    padding:3px 8px; border-radius:6px;
+  }
+
+  /* Video Preview */
+  .video-preview {
+    display:none;
+    background:#000;
+    border-radius:12px;
+    overflow:hidden;
+    aspect-ratio:16/9;
+    position:relative;
+    border: 1px solid var(--border);
+  }
+  .video-preview video { width:100%; height:100%; object-fit:contain; }
+  .video-preview .vid-label {
+    position:absolute; top:10px; left:10px;
+    background:rgba(0,0,0,0.7); border:1px solid var(--border-accent);
+    color:var(--accent); font-family:'DM Mono',monospace; font-size:10px;
+    padding:3px 8px; border-radius:6px;
+  }
+  .video-info {
+    display:none;
+    margin-top:14px;
+    padding:12px 16px;
+    background:var(--surface2);
+    border-radius:10px;
+    border:1px solid var(--border);
+    display:none;
+    gap:20px;
+    flex-wrap:wrap;
+  }
+  .video-info span { font-family:'DM Mono',monospace; font-size:12px; color:var(--text-dim); }
+  .video-info strong { color:var(--accent); font-weight:500; }
+
+  /* Waveform */
+  .waveform-bar {
+    margin-top:16px;
+    height:48px;
+    background:var(--surface2);
+    border:1px solid var(--border);
+    border-radius:10px;
+    overflow:hidden;
+    position:relative;
+  }
+  .waveform-visual {
+    display:flex; align-items:center; gap:2px;
+    padding:6px 12px; height:100%;
+  }
+  .wv { width:3px; background:var(--accent); border-radius:2px; opacity:0.4; transition:height 0.1s; }
+
+  /* Section divider */
+  .sec-divider {
+    font-size:11px; font-weight:700; letter-spacing:2px;
+    color:var(--text-dimmer); text-transform:uppercase;
+    padding:16px 0 10px; font-family:'DM Mono',monospace;
+    display:flex; align-items:center; gap:10px;
+  }
+  .sec-divider::after { content:''; flex:1; height:1px; background:var(--border); }
+
+  /* Text input area */
+  .text-input-area {
+    position:relative;
+    margin-bottom:12px;
+  }
+  .text-input-area textarea {
+    width:100%; min-height:100px;
+    background:var(--surface2);
+    border:1px solid var(--border);
+    border-radius:12px;
+    color:var(--text);
+    font-family:'DM Mono',monospace;
+    font-size:13px; line-height:1.7;
+    padding:14px 16px;
+    resize:vertical;
+    transition: border-color 0.2s;
+    outline:none;
+  }
+  .text-input-area textarea:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(0,229,160,0.08); }
+  .text-input-area textarea::placeholder { color:var(--text-dimmer); }
+  .char-count { font-family:'DM Mono',monospace; font-size:11px; color:var(--text-dimmer); text-align:right; margin-top:4px; }
+
+  /* Language tabs */
+  .lang-tabs { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px; }
+  .lang-tab {
+    padding:6px 14px;
+    border-radius:8px;
+    border:1px solid var(--border);
+    background:var(--surface2);
+    color:var(--text-dim);
+    font-size:13px; font-weight:600;
+    cursor:pointer;
+    transition:all 0.2s;
+  }
+  .lang-tab:hover { border-color:var(--accent); color:var(--accent); }
+  .lang-tab.active {
+    background:rgba(0,229,160,0.12);
+    border-color:var(--accent);
+    color:var(--accent);
+  }
+  .lang-flag { margin-right:5px; font-size:14px; }
+
+  /* Voice cards */
+  .voice-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .voice-card {
+    background:var(--surface2);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:14px;
+    cursor:pointer;
+    transition:all 0.2s;
+    position:relative;
+    overflow:hidden;
+  }
+  .voice-card::before {
+    content:'';
+    position:absolute; inset:0;
+    background:linear-gradient(135deg, transparent, rgba(0,229,160,0.05));
+    opacity:0; transition:opacity 0.2s;
+  }
+  .voice-card:hover::before, .voice-card.active::before { opacity:1; }
+  .voice-card:hover, .voice-card.active {
+    border-color:var(--accent);
+    box-shadow: 0 0 16px rgba(0,229,160,0.1);
+  }
+  .voice-card .vc-icon { font-size:22px; margin-bottom:6px; }
+  .voice-card .vc-name { font-size:13px; font-weight:700; }
+  .voice-card .vc-desc { font-size:11px; color:var(--text-dim); font-family:'DM Mono',monospace; margin-top:2px; }
+  .voice-card .vc-check {
+    position:absolute; top:10px; right:10px;
+    width:18px; height:18px;
+    background:var(--accent); border-radius:50%;
+    display:none; align-items:center; justify-content:center;
+    font-size:10px; color:#000; font-weight:800;
+  }
+  .voice-card.active .vc-check { display:flex; }
+
+  /* Sliders & controls */
+  .control-row {
+    display:flex; align-items:center; gap:12px;
+    margin-bottom:14px;
+  }
+  .control-label {
+    font-size:12px; font-weight:600; color:var(--text-dim);
+    min-width:90px; letter-spacing:0.5px;
+  }
+  .control-value {
+    font-family:'DM Mono',monospace; font-size:12px;
+    color:var(--accent); min-width:40px; text-align:right;
+  }
+  input[type=range] {
+    flex:1; height:4px;
+    background:var(--border);
+    border-radius:4px; outline:none;
+    -webkit-appearance:none; cursor:pointer;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance:none;
+    width:16px; height:16px;
+    background:var(--accent);
+    border-radius:50%;
+    box-shadow: 0 0 8px rgba(0,229,160,0.5);
+  }
+
+  /* Sound effects */
+  .sfx-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+  .sfx-btn {
+    background:var(--surface2);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:10px 6px;
+    cursor:pointer;
+    text-align:center;
+    transition:all 0.2s;
+    color:var(--text);
+  }
+  .sfx-btn:hover { border-color:var(--accent3); box-shadow:0 0 12px rgba(255,107,53,0.15); }
+  .sfx-btn.selected { border-color:var(--accent3); background:rgba(255,107,53,0.08); }
+  .sfx-btn .sfx-icon { font-size:20px; display:block; margin-bottom:4px; }
+  .sfx-btn .sfx-name { font-size:10px; color:var(--text-dim); font-family:'DM Mono',monospace; }
+
+  /* Quality selector */
+  .quality-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:12px; }
+  .q-btn {
+    background:var(--surface2);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:10px 4px;
+    cursor:pointer;
+    text-align:center;
+    transition:all 0.2s;
+    color:var(--text);
+  }
+  .q-btn:hover { border-color:var(--accent2); }
+  .q-btn.active { border-color:var(--accent2); background:rgba(123,94,167,0.12); }
+  .q-btn .q-res { font-size:13px; font-weight:800; display:block; }
+  .q-btn .q-label { font-size:9px; color:var(--text-dimmer); font-family:'DM Mono',monospace; }
+  .q-btn.ultra .q-res { color:#ffd700; }
+  .q-btn.ultra { border-color: rgba(255,215,0,0.3); }
+  .q-btn.ultra.active { background:rgba(255,215,0,0.08); border-color:#ffd700; }
+
+  /* Export format */
+  .fmt-row { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px; }
+  .fmt-btn {
+    padding:7px 14px;
+    border-radius:8px;
+    border:1px solid var(--border);
+    background:var(--surface2);
+    color:var(--text-dim);
+    font-family:'DM Mono',monospace;
+    font-size:12px;
+    cursor:pointer;
+    transition:all 0.2s;
+  }
+  .fmt-btn:hover { border-color:var(--accent); color:var(--accent); }
+  .fmt-btn.active { border-color:var(--accent); color:var(--accent); background:rgba(0,229,160,0.08); }
+
+  /* Toggle switches */
+  .toggle-row { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+  .toggle-label { font-size:13px; color:var(--text-dim); font-weight:600; }
+  .toggle {
+    width:40px; height:22px;
+    background:var(--border);
+    border-radius:11px;
+    position:relative;
+    cursor:pointer;
+    transition:background 0.2s;
+  }
+  .toggle.on { background:var(--accent); }
+  .toggle::after {
+    content:'';
+    position:absolute; top:3px; left:3px;
+    width:16px; height:16px;
+    background:#fff;
+    border-radius:50%;
+    transition:left 0.2s;
+  }
+  .toggle.on::after { left:21px; }
+
+  /* Progress / Render button */
+  .render-btn {
+    width:100%; padding:16px;
+    background: linear-gradient(135deg, var(--accent), #00c47a);
+    border:none; border-radius:12px;
+    color:#000; font-family:'Syne',sans-serif;
+    font-size:15px; font-weight:800;
+    cursor:pointer; letter-spacing:0.5px;
+    transition:all 0.25s;
+    position:relative; overflow:hidden;
+    margin-top:4px;
+  }
+  .render-btn:hover {
+    transform:translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,229,160,0.3);
+  }
+  .render-btn:active { transform:translateY(0); }
+  .render-btn::before {
+    content:'';
+    position:absolute; top:-50%; left:-60%;
+    width:40%; height:200%;
+    background:rgba(255,255,255,0.25);
+    transform:skewX(-20deg);
+    transition:left 0.5s;
+  }
+  .render-btn:hover::before { left:120%; }
+
+  /* Progress bar */
+  .progress-wrap { display:none; margin-top:16px; }
+  .progress-label { font-family:'DM Mono',monospace; font-size:12px; color:var(--text-dim); margin-bottom:8px; display:flex; justify-content:space-between; }
+  .progress-track { height:6px; background:var(--border); border-radius:6px; overflow:hidden; }
+  .progress-fill { height:100%; width:0%; background:linear-gradient(90deg, var(--accent), #7b5ea7); border-radius:6px; transition:width 0.3s ease; }
+
+  /* Audio layers list */
+  .layers-list { display:flex; flex-direction:column; gap:8px; }
+  .layer-item {
+    display:flex; align-items:center; gap:10px;
+    background:var(--surface2); border:1px solid var(--border);
+    border-radius:10px; padding:10px 14px;
+  }
+  .layer-icon { font-size:16px; }
+  .layer-name { flex:1; font-size:13px; font-weight:600; }
+  .layer-meta { font-family:'DM Mono',monospace; font-size:10px; color:var(--text-dim); }
+  .layer-del { background:none; border:none; color:var(--text-dimmer); cursor:pointer; font-size:14px; padding:2px 6px; border-radius:6px; transition:color 0.2s; }
+  .layer-del:hover { color:#ff5555; }
+
+  /* Volume mini */
+  .vol-mini { width:60px; height:3px; background:var(--border); border-radius:3px; position:relative; cursor:pointer; }
+  .vol-fill { height:100%; border-radius:3px; background:var(--accent); }
+
+  /* Add track button */
+  .add-track-btn {
+    width:100%;
+    padding:10px;
+    border:1px dashed var(--border);
+    border-radius:10px;
+    background:none;
+    color:var(--text-dim);
+    font-family:'Syne',sans-serif;
+    font-size:13px;
+    cursor:pointer;
+    transition:all 0.2s;
+    margin-top:8px;
+  }
+  .add-track-btn:hover { border-color:var(--accent); color:var(--accent); }
+
+  /* Tabs */
+  .tab-bar { display:flex; gap:2px; border-bottom:1px solid var(--border); }
+  .tab {
+    padding:10px 16px;
+    font-size:13px; font-weight:700;
+    color:var(--text-dim);
+    cursor:pointer;
+    border-bottom:2px solid transparent;
+    transition:all 0.2s;
+    letter-spacing:0.3px;
+  }
+  .tab.active { color:var(--accent); border-bottom-color:var(--accent); }
+  .tab:hover { color:var(--text); }
+
+  .tab-content { display:none; padding:20px; }
+  .tab-content.active { display:block; }
+
+  /* Right sidebar */
+  .sidebar { display:flex; flex-direction:column; gap:20px; }
+
+  /* Status dot */
+  .status-dot { width:8px; height:8px; border-radius:50%; background:var(--accent); display:inline-block; margin-right:6px; animation:pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  /* Notification toast */
+  .toast {
+    position:fixed; bottom:30px; right:30px;
+    background:var(--surface);
+    border:1px solid var(--border-accent);
+    border-radius:12px; padding:14px 20px;
+    font-size:13px; color:var(--text);
+    transform:translateX(120%);
+    transition:transform 0.3s ease;
+    z-index:1000;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    max-width:300px;
+  }
+  .toast.show { transform:translateX(0); }
+  .toast .t-icon { margin-right:8px; }
+
+  /* Select */
+  select {
+    background:var(--surface2);
+    border:1px solid var(--border);
+    border-radius:8px;
+    color:var(--text);
+    font-family:'DM Mono',monospace;
+    font-size:12px;
+    padding:7px 12px;
+    outline:none;
+    cursor:pointer;
+  }
+  select:focus { border-color:var(--accent); }
+
+  /* Responsive */
+  @media(max-width:900px) {
+    .main-grid { grid-template-columns:1fr; }
+    .voice-grid { grid-template-columns:repeat(4,1fr); }
+    .quality-grid { grid-template-columns:repeat(4,1fr); }
+  }
+  @media(max-width:600px) {
+    .voice-grid { grid-template-columns:1fr 1fr; }
+    .sfx-grid { grid-template-columns:repeat(3,1fr); }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="logo">
+      <div class="logo-icon">🎙</div>
+      <div class="logo-text">Voice<span>Sync</span> Studio</div>
+    </div>
+    <div class="badge"><span class="status-dot"></span>LIVE EDITOR</div>
+  </header>
+
+  <div class="main-grid">
+    <!-- LEFT PANEL -->
+    <div style="display:flex;flex-direction:column;gap:20px;">
+
+      <!-- Upload -->
+      <div class="panel">
+        <div class="panel-head">
+          <span class="icon">🎬</span>
+          <h2>VIDEO SOURCE</h2>
+        </div>
+        <div class="panel-body">
+          <div class="upload-zone" id="uploadZone">
+            <input type="file" id="videoInput" accept="video/*">
+            <div class="upload-icon">📹</div>
+            <h3>Drop your video here</h3>
+            <p>or click to browse files</p>
+            <div class="formats">
+              <span class="fmt-tag">MP4</span>
+              <span class="fmt-tag">MOV</span>
+              <span class="fmt-tag">AVI</span>
+              <span class="fmt-tag">MKV</span>
+              <span class="fmt-tag">WEBM</span>
+              <span class="fmt-tag">FLV</span>
+            </div>
+          </div>
+
+          <div class="video-preview" id="videoPreview">
+            <div class="vid-label">▶ PREVIEW</div>
+            <video id="videoPlayer" controls></video>
+          </div>
+
+          <div class="video-info" id="videoInfoRow">
+            <span>📄 <strong id="vFileName">—</strong></span>
+            <span>📐 <strong id="vResolution">—</strong></span>
+            <span>⏱ <strong id="vDuration">—</strong></span>
+            <span>💾 <strong id="vSize">—</strong></span>
+          </div>
+
+          <div class="waveform-bar" id="waveformBar" style="display:none;">
+            <div class="waveform-visual" id="waveViz"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TTS Panel -->
+      <div class="panel">
+        <div class="panel-head">
+          <span class="icon">🗣️</span>
+          <h2>TEXT TO SPEECH</h2>
+          <span class="count">AI POWERED</span>
+        </div>
+
+        <div class="tab-bar">
+          <div class="tab active" onclick="switchTab(this,'tts')">Voice Over</div>
+          <div class="tab" onclick="switchTab(this,'sfx')">Sound FX</div>
+          <div class="tab" onclick="switchTab(this,'music')">Background</div>
+          <div class="tab" onclick="switchTab(this,'layers')">Mix Layers</div>
+        </div>
+
+        <!-- TTS Tab -->
+        <div class="tab-content active" id="tab-tts">
+          <div class="sec-divider">Choose Language</div>
+          <div class="lang-tabs" id="langTabs">
+            <div class="lang-tab active" onclick="selectLang(this,'en')"><span class="lang-flag">🇬🇧</span>English</div>
+            <div class="lang-tab" onclick="selectLang(this,'ml')"><span class="lang-flag">🇮🇳</span>Malayalam</div>
+            <div class="lang-tab" onclick="selectLang(this,'hi')"><span class="lang-flag">🇮🇳</span>Hindi</div>
+            <div class="lang-tab" onclick="selectLang(this,'ta')"><span class="lang-flag">🇮🇳</span>Tamil</div>
+            <div class="lang-tab" onclick="selectLang(this,'te')"><span class="lang-flag">🇮🇳</span>Telugu</div>
+            <div class="lang-tab" onclick="selectLang(this,'fr')"><span class="lang-flag">🇫🇷</span>French</div>
+            <div class="lang-tab" onclick="selectLang(this,'de')"><span class="lang-flag">🇩🇪</span>German</div>
+            <div class="lang-tab" onclick="selectLang(this,'ar')"><span class="lang-flag">🇸🇦</span>Arabic</div>
+            <div class="lang-tab" onclick="selectLang(this,'zh')"><span class="lang-flag">🇨🇳</span>Chinese</div>
+            <div class="lang-tab" onclick="selectLang(this,'ja')"><span class="lang-flag">🇯🇵</span>Japanese</div>
+          </div>
+
+          <div class="sec-divider">Script / Text</div>
+          <div class="text-input-area">
+            <textarea id="scriptText" placeholder="Type or paste your script here...&#10;&#10;The AI will convert this to natural speech in your selected language and voice." oninput="updateCharCount()"></textarea>
+          </div>
+          <div class="char-count" id="charCount">0 / 5000 characters</div>
+
+          <div class="sec-divider">Voice Character</div>
+          <div class="voice-grid">
+            <div class="voice-card active" onclick="selectVoice(this,'male-deep')">
+              <div class="vc-check">✓</div>
+              <div class="vc-icon">👨</div>
+              <div class="vc-name">Male Deep</div>
+              <div class="vc-desc">Rich · Authoritative</div>
+            </div>
+            <div class="voice-card" onclick="selectVoice(this,'male-casual')">
+              <div class="vc-check">✓</div>
+              <div class="vc-icon">🧔</div>
+              <div class="vc-name">Male Casual</div>
+              <div class="vc-desc">Warm · Friendly</div>
+            </div>
+            <div class="voice-card" onclick="selectVoice(this,'female-pro')">
+              <div class="vc-check">✓</div>
+              <div class="vc-icon">👩</div>
+              <div class="vc-name">Female Pro</div>
+              <div class="vc-desc">Clear · Professional</div>
+            </div>
+            <div class="voice-card" onclick="selectVoice(this,'female-warm')">
+              <div class="vc-check">✓</div>
+              <div class="vc-icon">👩‍🦱</div>
+              <div class="vc-name">Female Warm</div>
+              <div class="vc-desc">Soft · Engaging</div>
+            </div>
+            <div class="voice-card" onclick="selectVoice(this,'kid-boy')">
+              <div class="vc-check">✓</div>
+              <div class="vc-icon">👦</div>
+              <div class="vc-name">Kid — Boy</div>
+              <div class="vc-desc">Young · Energetic</div>
+            </div>
+            <div class="voice-card" onclick="selectVoice(this,'kid-girl')">
+              <div class="vc-check">✓</div>
+              <div class="vc-icon">👧</div>
+              <div class="vc-name">Kid — Girl</div>
+              <div class="vc-desc">Young · Cheerful</div>
+            </div>
+            <div class="voice-card" onclick="selectVoice(this,'elder-male')">
+              <div class="vc-check">✓</div>
+              <div class="vc-icon">👴</div>
+              <div class="vc-name">Elder Male</div>
+              <div class="vc-desc">Wise · Calm</div>
+            </div>
+            <div class="voice-card" onclick="selectVoice(this,'narrator')">
+              <div class="vc-check">✓</div>
+              <div class="vc-icon">🎙️</div>
+              <div class="vc-name">Narrator</div>
+              <div class="vc-desc">Cinematic · Epic</div>
+            </div>
+          </div>
+
+          <div class="sec-divider">Voice Controls</div>
+          <div class="control-row">
+            <span class="control-label">Speed</span>
+            <input type="range" min="50" max="200" value="100" id="speedSlider" oninput="updateSlider(this,'speedVal','%')">
+            <span class="control-value" id="speedVal">100%</span>
+          </div>
+          <div class="control-row">
+            <span class="control-label">Pitch</span>
+            <input type="range" min="-10" max="10" value="0" id="pitchSlider" oninput="updateSlider(this,'pitchVal',' st')">
+            <span class="control-value" id="pitchVal">0 st</span>
+          </div>
+          <div class="control-row">
+            <span class="control-label">Volume</span>
+            <input type="range" min="0" max="100" value="80" id="volSlider" oninput="updateSlider(this,'volVal','%')">
+            <span class="control-value" id="volVal">80%</span>
+          </div>
+          <div class="control-row">
+            <span class="control-label">Pause</span>
+            <input type="range" min="0" max="2000" value="300" id="pauseSlider" oninput="updateSlider(this,'pauseVal',' ms')">
+            <span class="control-value" id="pauseVal">300 ms</span>
+          </div>
+
+          <div style="margin-top:4px;">
+            <button class="render-btn" onclick="addVoiceLayer()" style="background:linear-gradient(135deg,#7b5ea7,#a77bca);margin-bottom:0;">
+              ➕ Add Voice to Timeline
+            </button>
+          </div>
+        </div>
+
+        <!-- SFX Tab -->
+        <div class="tab-content" id="tab-sfx">
+          <div class="sec-divider">Sound Effects Library</div>
+          <div class="sfx-grid">
+            <div class="sfx-btn" onclick="toggleSFX(this)"><span class="sfx-icon">🎵</span><span class="sfx-name">Cinematic</span></div>
+            <div class="sfx-btn" onclick="toggleSFX(this)"><span class="sfx-icon">⚡</span><span class="sfx-name">Whoosh</span></div>
+            <div class="sfx-btn" onclick="toggleSFX(this)"><span class="sfx-icon">💥</span><span class="sfx-name">Impact</span></div>
+            <div class="sfx-btn" onclick="toggleSFX(this)"><span class="sfx-icon">🔔</span><span class="sfx-name">Bell</span></div>
+            <div class="sfx-btn" onclick="toggleSFX(this)"><span class="sfx-icon">🌊</span><span class="sfx-name">Ocean</span></div>
+            <div class="sfx-btn" onclick="toggleSFX(this)"><span class="sfx-icon">🌧️</span><span class="sfx-name">Rain</span></div>
+            <div class="sfx-btn" onclick="toggleSFX(this)"><span class="sfx-icon">🏙️</span><span class="sfx-name">City</span></div>
+            <div class="sfx-btn" onclick="toggleSFX(this)"><span class="sfx-icon">🌲</span><span class="sfx-name">Forest</span></div>
+            <div class="sfx-btn" onclick="toggleSFX(this)"><span class="sfx-icon">🔥</span><span class="sfx-name">Fire</span></div>
+            <div class="sfx-btn" onclick="toggleSFX(this)"><span class="sfx-icon">🎭</span><span class="sfx-name">Drama</span></div>
+            <div class="sfx-btn" onclick="toggleSFX(this)"><span class="sfx-icon">🚀</span><span class="sfx-name">Sci-Fi</span></div>
+            <div class="sfx-btn" onclick="toggleSFX(this)"><span class="sfx-icon">😂</span><span class="sfx-name">Laugh</span></div>
+            <div class="sfx-btn" onclick="toggleSFX(this)"><span class="sfx-icon">👏</span><span class="sfx-name">Applause</span></div>
+            <div class="sfx-btn" onclick="toggleSFX(this)"><span class="sfx-icon">🎺</span><span class="sfx-name">Fanfare</span></div>
+            <div class="sfx-btn" onclick="toggleSFX(this)"><span class="sfx-icon">🥁</span><span class="sfx-name">Drum Roll</span></div>
+          </div>
+
+          <div class="sec-divider">Upload Custom Audio</div>
+          <div class="upload-zone" style="padding:24px;" onclick="document.getElementById('sfxFile').click()">
+            <input type="file" id="sfxFile" accept="audio/*" style="display:none" onchange="handleAudioUpload(this)">
+            <div style="font-size:28px;margin-bottom:8px;">🎧</div>
+            <p style="font-size:13px;">Drop audio / SFX file here</p>
+            <div class="formats" style="margin-top:10px;">
+              <span class="fmt-tag">MP3</span>
+              <span class="fmt-tag">WAV</span>
+              <span class="fmt-tag">AAC</span>
+              <span class="fmt-tag">OGG</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Music Tab -->
+        <div class="tab-content" id="tab-music">
+          <div class="sec-divider">Background Music Style</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;">
+            <div class="sfx-btn" onclick="toggleSFX(this)"><span class="sfx-icon">🎹</span><span class="sfx-name">Ambient</span></div>
+            <div class="sfx-btn" onclick="toggleSFX(this)"><span class="sfx-icon">🎸</span><span class="sfx-name">Upbeat Pop</span></div>
+            <div class="sfx-btn" onclick="toggleSFX(this)"><span class="sfx-icon">🎻</span><span class="sfx-name">Orchestral</span></div>
+            <div class="sfx-btn" onclick="toggleSFX(this)"><span class="sfx-icon">🥁</span><span class="sfx-name">Hip Hop</span></div>
+            <div class="sfx-btn" onclick="toggleSFX(this)"><span class="sfx-icon">🎷</span><span class="sfx-name">Jazz</span></div>
+            <div class="sfx-btn" onclick="toggleSFX(this)"><span class="sfx-icon">🌌</span><span class="sfx-name">Cinematic</span></div>
+          </div>
+          <div class="sec-divider">Music Mix Controls</div>
+          <div class="control-row">
+            <span class="control-label">BG Volume</span>
+            <input type="range" min="0" max="100" value="30" oninput="updateSlider(this,'bgVolVal','%')">
+            <span class="control-value" id="bgVolVal">30%</span>
+          </div>
+          <div class="control-row">
+            <span class="control-label">Fade In</span>
+            <input type="range" min="0" max="5000" value="1000" oninput="updateSlider(this,'fadeInVal',' ms')">
+            <span class="control-value" id="fadeInVal">1000 ms</span>
+          </div>
+          <div class="control-row">
+            <span class="control-label">Fade Out</span>
+            <input type="range" min="0" max="5000" value="2000" oninput="updateSlider(this,'fadeOutVal',' ms')">
+            <span class="control-value" id="fadeOutVal">2000 ms</span>
+          </div>
+          <div class="toggle-row">
+            <span class="toggle-label">Duck on Voice</span>
+            <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+          </div>
+          <div class="toggle-row">
+            <span class="toggle-label">Loop Music</span>
+            <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+          </div>
+        </div>
+
+        <!-- Layers Tab -->
+        <div class="tab-content" id="tab-layers">
+          <div class="sec-divider">Active Audio Layers</div>
+          <div class="layers-list" id="layersList">
+            <div class="layer-item">
+              <span class="layer-icon">🎙️</span>
+              <span class="layer-name">Voice Over — EN</span>
+              <div class="vol-mini"><div class="vol-fill" style="width:80%"></div></div>
+              <span class="layer-meta">0:00–0:45</span>
+              <button class="layer-del" title="Remove">✕</button>
+            </div>
+            <div class="layer-item">
+              <span class="layer-icon">🎵</span>
+              <span class="layer-name">Ambient Background</span>
+              <div class="vol-mini"><div class="vol-fill" style="width:30%"></div></div>
+              <span class="layer-meta">Full</span>
+              <button class="layer-del" title="Remove" onclick="this.parentElement.remove()">✕</button>
+            </div>
+          </div>
+          <button class="add-track-btn" onclick="showToast('📤 Open the Voice Over or SFX tab to add new layers')">+ Add New Layer</button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- RIGHT SIDEBAR -->
+    <div class="sidebar">
+
+      <!-- Export Settings -->
+      <div class="panel">
+        <div class="panel-head">
+          <span class="icon">⚙️</span>
+          <h2>EXPORT SETTINGS</h2>
+        </div>
+        <div class="panel-body">
+
+          <div class="sec-divider">Output Quality</div>
+          <div class="quality-grid">
+            <div class="q-btn ultra active" onclick="selectQuality(this)">
+              <span class="q-res">4K</span>
+              <span class="q-label">3840×2160</span>
+            </div>
+            <div class="q-btn" onclick="selectQuality(this)">
+              <span class="q-res">2K</span>
+              <span class="q-label">2560×1440</span>
+            </div>
+            <div class="q-btn" onclick="selectQuality(this)">
+              <span class="q-res">1080p</span>
+              <span class="q-label">1920×1080</span>
+            </div>
+            <div class="q-btn" onclick="selectQuality(this)">
+              <span class="q-res">720p</span>
+              <span class="q-label">1280×720</span>
+            </div>
+            <div class="q-btn" onclick="selectQuality(this)">
+              <span class="q-res">480p</span>
+              <span class="q-label">854×480</span>
+            </div>
+            <div class="q-btn" onclick="selectQuality(this)">
+              <span class="q-res">360p</span>
+              <span class="q-label">640×360</span>
+            </div>
+            <div class="q-btn" onclick="selectQuality(this)">
+              <span class="q-res">Custom</span>
+              <span class="q-label">Set Size</span>
+            </div>
+            <div class="q-btn" onclick="selectQuality(this)">
+              <span class="q-res">Match</span>
+              <span class="q-label">Source</span>
+            </div>
+          </div>
+
+          <div class="sec-divider">Video Format</div>
+          <div class="fmt-row" id="videoFmtBtns">
+            <div class="fmt-btn active" onclick="selectFmt(this,'videoFmtBtns')">MP4</div>
+            <div class="fmt-btn" onclick="selectFmt(this,'videoFmtBtns')">MOV</div>
+            <div class="fmt-btn" onclick="selectFmt(this,'videoFmtBtns')">MKV</div>
+            <div class="fmt-btn" onclick="selectFmt(this,'videoFmtBtns')">WEBM</div>
+            <div class="fmt-btn" onclick="selectFmt(this,'videoFmtBtns')">AVI</div>
+          </div>
+
+          <div class="sec-divider">Codec & Bitrate</div>
+          <div class="control-row" style="margin-bottom:10px;">
+            <span class="control-label">Video Codec</span>
+            <select>
+              <option>H.264 (AVC)</option>
+              <option>H.265 (HEVC)</option>
+              <option>VP9</option>
+              <option>AV1</option>
+              <option>ProRes 422</option>
+            </select>
+          </div>
+          <div class="control-row" style="margin-bottom:10px;">
+            <span class="control-label">Audio Codec</span>
+            <select>
+              <option>AAC</option>
+              <option>MP3</option>
+              <option>Opus</option>
+              <option>PCM (WAV)</option>
+            </select>
+          </div>
+          <div class="control-row">
+            <span class="control-label">Bitrate</span>
+            <input type="range" min="1" max="80" value="40" oninput="updateSlider(this,'bitrateVal',' Mbps')">
+            <span class="control-value" id="bitrateVal">40 Mbps</span>
+          </div>
+          <div class="control-row">
+            <span class="control-label">Frame Rate</span>
+            <select>
+              <option>24 fps</option>
+              <option>25 fps</option>
+              <option selected>30 fps</option>
+              <option>50 fps</option>
+              <option>60 fps</option>
+            </select>
+          </div>
+
+          <div class="sec-divider">Audio Export</div>
+          <div class="fmt-row" id="audioFmtBtns">
+            <div class="fmt-btn active" onclick="selectFmt(this,'audioFmtBtns')">Stereo</div>
+            <div class="fmt-btn" onclick="selectFmt(this,'audioFmtBtns')">Surround 5.1</div>
+            <div class="fmt-btn" onclick="selectFmt(this,'audioFmtBtns')">Mono</div>
+          </div>
+
+          <div class="sec-divider">Options</div>
+          <div class="toggle-row">
+            <span class="toggle-label">HDR Output</span>
+            <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+          </div>
+          <div class="toggle-row">
+            <span class="toggle-label">Hardware Accel.</span>
+            <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+          </div>
+          <div class="toggle-row">
+            <span class="toggle-label">Noise Reduction</span>
+            <div class="toggle" onclick="this.classList.toggle('on')"></div>
+          </div>
+          <div class="toggle-row">
+            <span class="toggle-label">Audio Normalize</span>
+            <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+          </div>
+          <div class="toggle-row">
+            <span class="toggle-label">Export Audio Only</span>
+            <div class="toggle" onclick="this.classList.toggle('on')"></div>
+          </div>
+
+          <button class="render-btn" onclick="startRender()" id="renderBtn">
+            🎬 Render & Export Video
+          </button>
+
+          <div class="progress-wrap" id="progressWrap">
+            <div class="progress-label">
+              <span id="progressStatus">Initialising renderer…</span>
+              <span id="progressPct">0%</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill" id="progressFill"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick tips -->
+      <div class="panel">
+        <div class="panel-head">
+          <span class="icon">💡</span>
+          <h2>QUICK TIPS</h2>
+        </div>
+        <div class="panel-body" style="font-size:12px;color:var(--text-dim);font-family:'DM Mono',monospace;line-height:1.8;">
+          <p>→ Add layers in the <strong style="color:var(--accent)">Mix Layers</strong> tab</p>
+          <p>→ Use <strong style="color:var(--accent)">Duck on Voice</strong> to auto-lower music during speech</p>
+          <p>→ <strong style="color:var(--accent)">4K render</strong> requires H.265 for best compression</p>
+          <p>→ Try <strong style="color:var(--accent)">Narrator</strong> voice for documentary-style videos</p>
+          <p>→ Malayalam & Tamil voices support <strong style="color:var(--accent)">regional accents</strong></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"><span class="t-icon">✅</span><span id="toastMsg"></span></div>
+
+<script>
+// Waveform animation
+function buildWaveform() {
+  const viz = document.getElementById('waveViz');
+  viz.innerHTML = '';
+  for(let i=0;i<80;i++){
+    const d = document.createElement('div');
+    d.className = 'wv';
+    const h = Math.random()*30+4;
+    d.style.height = h+'px';
+    d.style.opacity = 0.3+Math.random()*0.6;
+    viz.appendChild(d);
+  }
+}
+buildWaveform();
+setInterval(()=>{
+  document.querySelectorAll('.wv').forEach(d=>{
+    if(Math.random()>0.7){
+      d.style.height=(Math.random()*30+4)+'px';
+      d.style.opacity=(0.3+Math.random()*0.6);
+    }
+  });
+},200);
+
+// Video upload
+const videoInput = document.getElementById('videoInput');
+const uploadZone = document.getElementById('uploadZone');
+const videoPreview = document.getElementById('videoPreview');
+const videoPlayer = document.getElementById('videoPlayer');
+const videoInfoRow = document.getElementById('videoInfoRow');
+const waveformBar = document.getElementById('waveformBar');
+
+uploadZone.addEventListener('dragover', e=>{e.preventDefault();uploadZone.classList.add('dragover');});
+uploadZone.addEventListener('dragleave', ()=>uploadZone.classList.remove('dragover'));
+uploadZone.addEventListener('drop', e=>{
+  e.preventDefault();
+  uploadZone.classList.remove('dragover');
+  const f = e.dataTransfer.files[0];
+  if(f && f.type.startsWith('video/')) handleVideo(f);
+});
+videoInput.addEventListener('change', e=>{ if(e.target.files[0]) handleVideo(e.target.files[0]); });
+
+function handleVideo(file){
+  const url = URL.createObjectURL(file);
+  videoPlayer.src = url;
+  uploadZone.style.display='none';
+  videoPreview.style.display='block';
+  videoInfoRow.style.display='flex';
+  waveformBar.style.display='block';
+
+  document.getElementById('vFileName').textContent = file.name.length>20?file.name.slice(0,18)+'…':file.name;
+  document.getElementById('vSize').textContent = (file.size/1048576).toFixed(1)+' MB';
+
+  videoPlayer.onloadedmetadata = ()=>{
+    const w=videoPlayer.videoWidth, h=videoPlayer.videoHeight;
+    document.getElementById('vResolution').textContent = w+'×'+h;
+    const d = videoPlayer.duration;
+    const m=Math.floor(d/60), s=Math.floor(d%60);
+    document.getElementById('vDuration').textContent = m+':'+String(s).padStart(2,'0');
+  };
+  showToast('🎬 Video loaded successfully!');
+}
+
+// Audio upload
+function handleAudioUpload(input){
+  if(input.files[0]) showToast('🎧 Custom audio "'+input.files[0].name+'" added!');
+}
+
+// Tab switching
+function switchTab(el, tabId){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tab-'+tabId).classList.add('active');
+}
+
+// Language selection
+function selectLang(el, code){
+  document.querySelectorAll('.lang-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  showToast('🌐 Language set to '+el.textContent.trim());
+}
+
+// Voice selection
+function selectVoice(el, id){
+  document.querySelectorAll('.voice-card').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// Quality selection
+function selectQuality(el){
+  document.querySelectorAll('.q-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// Format selection
+function selectFmt(el, groupId){
+  document.querySelectorAll('#'+groupId+' .fmt-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// SFX toggle
+function toggleSFX(el){
+  el.classList.toggle('selected');
+  const name = el.querySelector('.sfx-name').textContent;
+  if(el.classList.contains('selected')) showToast('🔊 "'+name+'" added to mix');
+}
+
+// Sliders
+function updateSlider(el, valId, suffix){
+  document.getElementById(valId).textContent = el.value+suffix;
+}
+
+// Char count
+function updateCharCount(){
+  const t = document.getElementById('scriptText').value;
+  document.getElementById('charCount').textContent = t.length+' / 5000 characters';
+}
+
+// Add voice layer
+function addVoiceLayer(){
+  const lang = document.querySelector('.lang-tab.active')?.textContent.trim() || 'English';
+  const voice = document.querySelector('.voice-card.active .vc-name')?.textContent || 'Male Deep';
+  const text = document.getElementById('scriptText').value;
+  if(!text.trim()){ showToast('⚠️ Please enter some script text first'); return; }
+  const list = document.getElementById('layersList');
+  const item = document.createElement('div');
+  item.className = 'layer-item';
+  item.innerHTML = `
+    <span class="layer-icon">🗣️</span>
+    <span class="layer-name">${voice} · ${lang}</span>
+    <div class="vol-mini"><div class="vol-fill" style="width:80%"></div></div>
+    <span class="layer-meta">New</span>
+    <button class="layer-del" onclick="this.parentElement.remove()">✕</button>
+  `;
+  list.appendChild(item);
+  showToast('✅ Voice layer added! Switch to Mix Layers tab to manage.');
+}
+
+// Render
+let renderTimer = null;
+function startRender(){
+  if(renderTimer) return;
+  const quality = document.querySelector('.q-btn.active .q-res')?.textContent || '4K';
+  const fmt = document.querySelector('#videoFmtBtns .fmt-btn.active')?.textContent || 'MP4';
+  const btn = document.getElementById('renderBtn');
+  const wrap = document.getElementById('progressWrap');
+  const fill = document.getElementById('progressFill');
+  const status = document.getElementById('progressStatus');
+  const pct = document.getElementById('progressPct');
+
+  wrap.style.display='block';
+  btn.disabled=true;
+  btn.style.opacity='0.5';
+  btn.textContent='⏳ Rendering…';
+
+  const steps = [
+    [5,'Analysing video source…'],
+    [15,'Processing audio layers…'],
+    [28,'Synthesising voice tracks…'],
+    [42,'Mixing sound effects…'],
+    [55,'Applying background music…'],
+    [68,'Encoding video at '+quality+'…'],
+    [80,'Writing '+fmt+' container…'],
+    [90,'Finalising audio sync…'],
+    [98,'Quality check…'],
+    [100,'Done! 🎉'],
+  ];
+
+  let i=0;
+  renderTimer = setInterval(()=>{
+    if(i>=steps.length){
+      clearInterval(renderTimer); renderTimer=null;
+      btn.disabled=false; btn.style.opacity='1';
+      btn.textContent='🎬 Render & Export Video';
+      showToast('🎉 Export complete! '+quality+' '+fmt+' ready to download.');
+      return;
+    }
+    const [p,s]=steps[i++];
+    fill.style.width=p+'%';
+    status.textContent=s;
+    pct.textContent=p+'%';
+  },900);
+}
+
+// Toast
+function showToast(msg){
+  const t=document.getElementById('toast');
+  const m=document.getElementById('toastMsg');
+  m.textContent=msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3200);
+}
+</script>
+</body>
+</html>
